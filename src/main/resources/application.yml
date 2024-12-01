@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: dg-cinema-backend
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: 'jdbc:h2:mem:dg-cinema'
+    username: 'sa'
+    password: ''
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  jpa:
+    hibernate:
+      ddl-auto: validate
+      naming:
+        implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy # snake_case 로 변경
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+  flyway:
+    enabled: true
