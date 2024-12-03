@@ -8,7 +8,7 @@ title: dg-cinema Stage 1 설계
 ---
 erDiagram
     "User(사용자)" {
-        UUID user_id PK "사용자_엔티티"
+        Long user_id PK "사용자_엔티티"
         string account "계정"
         string password "비밀번호"
         string nickname "사용자_이름"
@@ -16,7 +16,6 @@ erDiagram
     "Movie(영화)" {
         Long movie_id PK "영화_아이디"
         String name "영화명"
-        String poster "영화 포스터 링크"
         String movie_director "영화 감독"
         LocalDate release_date "개봉일 (국내기준)"
     }
@@ -34,7 +33,7 @@ erDiagram
 
     "Reservation(예약)" {
         Long reservation_id PK "예약_아이디"
-        UUID user_id FK "사용자_엔티티"
+        Long user_id FK "사용자_엔티티"
         Long running_time_id FK "상영시간_아이디"
         String seet_no "좌석번호"
     }
