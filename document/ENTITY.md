@@ -15,7 +15,7 @@ erDiagram
     }
     "Movie(영화)" {
         Long movie_id PK "영화_아이디"
-        String name "영화명"
+        String title "영화명"
         String movie_director "영화 감독"
         LocalDate release_date "개봉일 (국내기준)"
     }
@@ -61,3 +61,13 @@ erDiagram
 - 상영관 좌석은 차등가격제도를 이용하지 않습니다. (일괄 10,000원으로 설정합니다.)
 - 예약 1건당 하나의 좌석에 대해 처리합니다. (한 사람이 여러장을 예약할 경우, n 건의 예약 row가 발생합니다.)
 - **제일중요** : 해당 설계는 초안이며, 의견, 코드리뷰에 따라 수정할 수 있습니다.
+
+## 기타
+
+### H2 DB에서 schema 확인시
+
+```sql
+select TABLE_NAME, COLUMN_NAME, DATA_TYPE, CHARACTER_MAXIMUM_LENGTH as LENGTH, COLUMN_DEFAULT, REMARKS
+from INFORMATION_SCHEMA.COLUMNS
+where TABLE_SCHEMA = 'PUBLIC';
+```

@@ -28,27 +28,12 @@ public class DgUser extends BaseEntity {
 	@Column(nullable = false)
 	private String nickname;    // 사용자_이름
 
-	protected DgUser(DgUserDto dto) {
+	protected DgUser(Long userId, String account, String password, String nickname) {
 		super();
-		this.userId = dto.getUserId();
-		this.account = dto.getAccount();
-		this.password = dto.getPassword();
-		this.nickname = dto.getNickname();
-		this.createdDate = dto.getCreatedDate();
-		this.lastModifiedDate = dto.getLastModifiedDate();
-
-		// 갸아악 졸려
-	}
-
-	protected DgUser(String account, String password, String nickname) {
-		super();
-
+		this.userId = userId;
 		this.account = account;
 		this.password = password;
 		this.nickname = nickname;
-	}
 
-	public DgUserDto toDto() {
-		return new DgUserDto(this);
 	}
 }

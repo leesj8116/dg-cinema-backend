@@ -40,6 +40,6 @@ public class DgUserDto {
 	}
 
 	public DgUser toEntity() {
-		return new DgUser(this);
+		return new DgUser(userId, account, password, nickname);
 	}
 }
