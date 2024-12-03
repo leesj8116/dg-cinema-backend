@@ -1,5 +1,5 @@
 CREATE TABLE dg_user (
-    id IDENTITY NOT NULL PRIMARY KEY,
+    user_id IDENTITY NOT NULL PRIMARY KEY,
     account VARCHAR(100) NOT NULL UNIQUE COMMENT '사용자 계정',
     password VARCHAR(100) NOT NULL COMMENT '비밀번호',
     nickname VARCHAR(100) NOT NULL COMMENT '사용자 이름',

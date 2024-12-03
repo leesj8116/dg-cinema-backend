@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 public class DgUser extends BaseEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	private Long userId;
 
 	@Column(nullable = false)
 	private String account;     // 계정
@@ -30,7 +30,7 @@ public class DgUser extends BaseEntity {
 
 	protected DgUser(DgUserDto dto) {
 		super();
-		this.id = dto.getId();
+		this.userId = dto.getUserId();
 		this.account = dto.getAccount();
 		this.password = dto.getPassword();
 		this.nickname = dto.getNickname();

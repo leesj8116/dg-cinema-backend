@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DgUserDto {
-	private Long id;
+	private Long userId;
 
 	@NotBlank(message = "계정은 필수 입력 값입니다.")
 	@Pattern(regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Za-z]{2,6}$", message = "이메일 형식이 올바르지 않습니다.")
@@ -30,7 +30,7 @@ public class DgUserDto {
 	private LocalDateTime lastModifiedDate;
 
 	public DgUserDto(DgUser entity) {
-		this.id = entity.getId();
+		this.userId = entity.getUserId();
 		this.account = entity.getAccount();
 		// @TODO: 비밀번호 평문 -> 암호문 관리
 		this.password = entity.getPassword();
