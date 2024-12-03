@@ -1,0 +1,15 @@
+CREATE TABLE dg_user (
+    id IDENTITY NOT NULL PRIMARY KEY,
+    account VARCHAR(100) NOT NULL UNIQUE COMMENT '사용자 계정',
+    password VARCHAR(100) NOT NULL COMMENT '비밀번호',
+    nickname VARCHAR(100) NOT NULL COMMENT '사용자 이름',
+    created_date TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    last_modified_date TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE movie (
+    movie_id IDENTITY NOT NULL PRIMARY KEY COMMENT '영화 제목',
+    name VARCHAR(200) NOT NULL COMMENT '감독',
+    director VARCHAR(50) NOT NULL COMMENT '개봉일 (국내 기준)',
+    release_date TIMESTAMP(6) NOT NULL
+);
