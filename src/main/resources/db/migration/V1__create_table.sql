@@ -11,7 +11,7 @@ CREATE TABLE movie (
     movie_id IDENTITY NOT NULL PRIMARY KEY,
     title VARCHAR(200) NOT NULL COMMENT '영화 제목',
     director VARCHAR(50) COMMENT '감독',
-    release_date TIMESTAMP(6) COMMENT '개봉일 (국내 기준)',
+    release_date DATE COMMENT '개봉일 (국내 기준)',
     created_date TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     last_modified_date TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP
 );

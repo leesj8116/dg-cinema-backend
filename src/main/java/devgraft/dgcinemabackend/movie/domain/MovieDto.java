@@ -1,5 +1,6 @@
 package devgraft.dgcinemabackend.movie.domain;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import jakarta.validation.constraints.NotBlank;
@@ -17,9 +18,11 @@ public class MovieDto {
 	@NotBlank(message = "영화 제목은 필수 입력 값입니다.")
 	private String title;
 	private String director;
-	private LocalDateTime releaseDate;
-	private LocalDateTime createdDate;
-	private LocalDateTime lastModifiedDate;
+	private LocalDate releaseDate;
+	@Builder.Default
+	private LocalDateTime createdDate = LocalDateTime.now();
+	@Builder.Default
+	private LocalDateTime lastModifiedDate = LocalDateTime.now();
 
 	public MovieDto(Movie entity) {
 		this.movieId = entity.getMovieId();
@@ -28,9 +31,5 @@ public class MovieDto {
 		this.releaseDate = entity.getReleaseDate();
 		this.createdDate = entity.getCreatedDate();
 		this.lastModifiedDate = entity.getLastModifiedDate();
-	}
-
-	public Movie toEntity() {
-		return new Movie(movieId, title, director, releaseDate);
 	}
 }

@@ -1,6 +1,6 @@
 package devgraft.dgcinemabackend.movie.domain;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import devgraft.dgcinemabackend.common.domain.BaseEntity;
 import jakarta.persistence.Column;
@@ -28,11 +28,18 @@ public class Movie extends BaseEntity {
 	private String director;            // 감독
 
 	@Column(nullable = false)
-	private LocalDateTime releaseDate;  // 개봉일
+	private LocalDate releaseDate;  // 개봉일
 
-	protected Movie(Long movieId, String title, String director, LocalDateTime releaseDate) {
+	public Movie(Long movieId, String title, String director, LocalDate releaseDate) {
 		super();
 		this.movieId = movieId;
+		this.title = title;
+		this.director = director;
+		this.releaseDate = releaseDate;
+	}
+
+	public Movie(String title, String director, LocalDate releaseDate) {
+		super();
 		this.title = title;
 		this.director = director;
 		this.releaseDate = releaseDate;
