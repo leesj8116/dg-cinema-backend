@@ -26,8 +26,10 @@ public class DgUserDto {
 	@Pattern(regexp = "^[ㄱ-ㅎ가-힣a-z0-9-_]{2,10}$", message = "닉네임은 특수문자를 제외한 2 ~ 10자리여야 합니다.")
 	private String nickname;
 
-	private LocalDateTime createdDate;
-	private LocalDateTime lastModifiedDate;
+	@Builder.Default
+	private LocalDateTime createdDate = LocalDateTime.now();
+	@Builder.Default
+	private LocalDateTime lastModifiedDate = LocalDateTime.now();
 
 	public DgUserDto(DgUser entity) {
 		this.userId = entity.getUserId();
