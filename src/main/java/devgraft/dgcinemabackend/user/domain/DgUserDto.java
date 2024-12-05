@@ -38,8 +38,4 @@ public class DgUserDto {
 		this.createdDate = entity.getCreatedDate();
 		this.lastModifiedDate = entity.getLastModifiedDate();
 	}
-
-	public DgUser toEntity() {
-		return new DgUser(userId, account, password, nickname);
-	}
 }
