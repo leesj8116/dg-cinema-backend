@@ -1,4 +1,4 @@
-package devgraft.dgcinemabackend.user.api;
+package devgraft.dgcinemabackend.user.app;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
@@ -12,14 +12,14 @@ import devgraft.dgcinemabackend.user.domain.DgUserDto;
 import devgraft.dgcinemabackend.user.infra.DgUserJpaRepository;
 
 @SpringBootTest()
-class DgUserApiTest {
+class DgUserAppTest {
 
-	private final DgUserApi dgUserApi;
+	private final DgUserApp dgUserApp;
 	private final DgUserJpaRepository dgUserJpaRepository;
 
 	@Autowired
-	public DgUserApiTest(DgUserApi dgUserApi, DgUserJpaRepository dgUserJpaRepository) {
-		this.dgUserApi = dgUserApi;
+	public DgUserAppTest(DgUserApp dgUserApp, DgUserJpaRepository dgUserJpaRepository) {
+		this.dgUserApp = dgUserApp;
 		this.dgUserJpaRepository = dgUserJpaRepository;
 	}
 
@@ -39,7 +39,7 @@ class DgUserApiTest {
 			.build();
 
 		// when
-		dgUserApi.createUser(userDto);
+		dgUserApp.createUser(userDto);
 
 		// then
 		Assertions.assertThat(dgUserJpaRepository.findByAccount("test@test.com").isPresent()).isTrue();
@@ -62,10 +62,10 @@ class DgUserApiTest {
 			.build();
 
 		// when
-		dgUserApi.createUser(userDto);
+		dgUserApp.createUser(userDto);
 
 		// then
-		Assertions.assertThatThrownBy(() -> dgUserApi.createUser(duplicateDto))
+		Assertions.assertThatThrownBy(() -> dgUserApp.createUser(duplicateDto))
 			.isInstanceOf(DataIntegrityViolationException.class);
 	}
 }
