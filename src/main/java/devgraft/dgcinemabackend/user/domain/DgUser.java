@@ -28,12 +28,18 @@ public class DgUser extends BaseEntity {
 	@Column(nullable = false)
 	private String nickname;    // 사용자_이름
 
-	protected DgUser(Long userId, String account, String password, String nickname) {
+	public DgUser(Long userId, String account, String password, String nickname) {
 		super();
 		this.userId = userId;
 		this.account = account;
 		this.password = password;
 		this.nickname = nickname;
+	}
 
+	public DgUser(String account, String password, String nickname) {
+		super();
+		this.account = account;
+		this.password = password;
+		this.nickname = nickname;
 	}
 }

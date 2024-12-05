@@ -1,17 +1,19 @@
 package devgraft.dgcinemabackend.user.api;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import devgraft.dgcinemabackend.user.domain.DgUser;
+import devgraft.dgcinemabackend.user.app.DgUserApp;
 import devgraft.dgcinemabackend.user.domain.DgUserDto;
-import devgraft.dgcinemabackend.user.infra.DgUserJpaRepository;
 
 @RestController
 public class DgUserApi {
-	private final DgUserJpaRepository dgUserJpaRepository;
+	private final DgUserApp dgUserApp;
 
-	public DgUserApi(DgUserJpaRepository dgUserJpaRepository) {
-		this.dgUserJpaRepository = dgUserJpaRepository;
+	@Autowired
+	public DgUserApi(DgUserApp dgUserApp) {
+		this.dgUserApp = dgUserApp;
 	}
 
 	/**
@@ -20,7 +22,8 @@ public class DgUserApi {
 	 * @param user
 	 * @return
 	 */
-	public DgUser createUser(DgUserDto user) {
-		return dgUserJpaRepository.save(user.toEntity());
+	@PostMapping("/user")
+	public DgUserDto createUser(DgUserDto user) {
+		return dgUserApp.createUser(user);
 	}
 }
