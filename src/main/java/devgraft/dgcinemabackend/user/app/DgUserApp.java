@@ -16,8 +16,6 @@ public class DgUserApp {
 		this.dgUserRepository = dgUserRepository;
 	}
 
-	@Autowired
-
 	public DgUserDto createUser(DgUserDto user) {
 		DgUser entity = dgUserRepository.save(new DgUser(user.getAccount(), user.getPassword(), user.getNickname()));
 
