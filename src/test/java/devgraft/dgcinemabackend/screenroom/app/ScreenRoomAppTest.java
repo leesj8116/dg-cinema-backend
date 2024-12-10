@@ -43,4 +43,20 @@ class ScreenRoomAppTest {
 		Assertions.assertThat(result.getScreenNumber()).isEqualTo(1);
 
 	}
+
+	@Test
+	@DisplayName("상영관은 유효한 극장 아이디를 가져야 한다")
+	void cinemaRequired() {
+		// given
+		ScreenRoomDto dto = ScreenRoomDto.builder()
+			.cinemaId(9999L)        // 등록되지 않은 cinemaId
+			.screenNumber(1L)
+			.build();
+
+		// when
+		// then
+		Assertions.assertThatThrownBy(() -> screenRoomApp.createScreenRoom(dto))
+			.isInstanceOf(IllegalArgumentException.class);
+	}
+
 }
