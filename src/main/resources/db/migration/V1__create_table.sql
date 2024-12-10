@@ -17,9 +17,18 @@ CREATE TABLE movie (
 );
 
 CREATE TABLE cinema (
-    cinema_id IDENTITY NOT NULL PRIMARY KEY,
+    cinema_id IDENTITY NOT NULL PRIMARY KEY COMMENT '영화관 아이디',
     name VARCHAR(50) NOT NULL COMMENT '영화관 이름',
     location VARCHAR(200) NOT NULL COMMENT '영화관 위치',
     created_date TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     last_modified_date TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE screen_room (
+    cinema_id BIGINT NOT NULL COMMENT '영화관 아이디',
+    screen_number BIGINT NOT NULL COMMENT '상영관 번호',
+    created_date TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    last_modified_date TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (cinema_id, screen_number),
+    FOREIGN KEY (cinema_id) REFERENCES cinema(cinema_id)
 );

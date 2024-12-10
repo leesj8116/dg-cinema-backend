@@ -22,8 +22,8 @@ class CinemaAppTest {
 	void createCinema() {
 		// given
 		CinemaDto cinemaDto = CinemaDto.builder()
-			.name("DG신촌")
-			.location("신촌촌촌")
+			.name("필트오버")
+			.location("필트오버 꼭대기층")
 			.build();
 		// when
 		CinemaDto result = cinemaApp.createCinema(cinemaDto);
