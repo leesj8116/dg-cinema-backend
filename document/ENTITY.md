@@ -27,8 +27,7 @@ erDiagram
 
     "ScreenRoom(상영관)" {
         Long cinema_id PK, FK "극장_아이디"
-        Long screen_no PK "상영관_번호"
-        Enum screen_type "상영관 구분 (일반, 컴포트, 돌비)"
+        Long screen_number PK "상영관_번호"
     }
 
     "Reservation(예약)" {
