@@ -25,6 +25,11 @@ public class Cinema extends BaseEntity {
 	@Column(nullable = false, length = 200)
 	private String location;    // 영화관 주소
 
+	public Cinema(Long cinemaId) {
+		super();
+		this.cinemaId = cinemaId;
+	}
+
 	public Cinema(Long cinemaId, String name, String location) {
 		super();
 		this.cinemaId = cinemaId;
