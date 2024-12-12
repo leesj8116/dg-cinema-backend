@@ -13,8 +13,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ScreenRoomDto {
+	@NotNull(message = "극장 번호는 필수입니다.")
 	private Long cinemaId;
-	@NotNull(message = "상영관 번호를 필수로 입력해야합니다.")
+	@NotNull(message = "상영관 번호는 필수입니다.")
 	private Long screenNumber;
 	@Builder.Default
 	private LocalDateTime createdDate = LocalDateTime.now();
