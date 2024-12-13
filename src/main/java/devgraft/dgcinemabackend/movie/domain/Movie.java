@@ -2,6 +2,8 @@ package devgraft.dgcinemabackend.movie.domain;
 
 import java.time.LocalDate;
 
+import org.springframework.util.Assert;
+
 import devgraft.dgcinemabackend.common.domain.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -30,18 +32,24 @@ public class Movie extends BaseEntity {
 	@Column(nullable = false)
 	private LocalDate releaseDate;  // 개봉일
 
-	public Movie(Long movieId, String title, String director, LocalDate releaseDate) {
-		super();
+	public Movie(final Long movieId, final String title, final String director, final LocalDate releaseDate) {
 		this.movieId = movieId;
-		this.title = title;
-		this.director = director;
+		setTitle(title);
+		setDirector(director);
 		this.releaseDate = releaseDate;
 	}
 
-	public Movie(String title, String director, LocalDate releaseDate) {
-		super();
+	public Movie(final String title, final String director, final LocalDate releaseDate) {
+		this(null, title, director, releaseDate);
+	}
+
+	private void setTitle(final String title) {
+		Assert.hasText(title, "영화 제목은 필수 값입니다");
+		Assert.isTrue(title.length() < 200, "영화 제목의 길이는 200을 넘지 않아야 합니다.");
 		this.title = title;
-		this.director = director;
-		this.releaseDate = releaseDate;
+	}
+
+	private void setDirector(final String director) {
+		Assert.isTrue(director.length() < 50, "감독의 이름은 50자를 넘지 않아야 합니다.");
 	}
 }
