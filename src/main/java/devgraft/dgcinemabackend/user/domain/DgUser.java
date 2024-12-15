@@ -19,13 +19,13 @@ public class DgUser extends BaseEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long userId;
 
-	@Column(nullable = false)
+	@Column(nullable = false, length = 50)
 	private String account;     // 계정
 
-	@Column(nullable = false)
+	@Column(nullable = false, length = 100)
 	private String password;    // 비밀번호
 
-	@Column(nullable = false)
+	@Column(nullable = false, length = 30)
 	private String nickname;    // 사용자_이름
 
 	public DgUser(Long userId, String account, String password, String nickname) {
@@ -37,9 +37,6 @@ public class DgUser extends BaseEntity {
 	}
 
 	public DgUser(String account, String password, String nickname) {
-		super();
-		this.account = account;
-		this.password = password;
-		this.nickname = nickname;
+		this(null, account, password, nickname);
 	}
 }

@@ -1,9 +1,9 @@
 -- 사용자
 CREATE TABLE dg_user (
     user_id IDENTITY NOT NULL PRIMARY KEY,
-    account VARCHAR(100) NOT NULL UNIQUE COMMENT '사용자 계정',
+    account VARCHAR(50) NOT NULL UNIQUE COMMENT '사용자 계정',
     password VARCHAR(100) NOT NULL COMMENT '비밀번호',
-    nickname VARCHAR(100) NOT NULL COMMENT '사용자 이름',
+    nickname VARCHAR(30) NOT NULL COMMENT '사용자 이름',
     created_date TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     last_modified_date TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
