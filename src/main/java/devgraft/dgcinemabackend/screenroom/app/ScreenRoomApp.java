@@ -1,42 +1,35 @@
 package devgraft.dgcinemabackend.screenroom.app;
 
-import java.util.NoSuchElementException;
+import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import devgraft.dgcinemabackend.cinema.app.CinemaApp;
+import devgraft.dgcinemabackend.cinema.domain.Cinema;
+import devgraft.dgcinemabackend.screenroom.domain.CinemaFinder;
+import devgraft.dgcinemabackend.screenroom.domain.CreateScreenRoomRequest;
 import devgraft.dgcinemabackend.screenroom.domain.ScreenRoom;
-import devgraft.dgcinemabackend.screenroom.domain.ScreenRoomDto;
-import devgraft.dgcinemabackend.screenroom.infra.ScreenRoomJpaRepository;
+import devgraft.dgcinemabackend.screenroom.domain.ScreenRoomRepository;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
 public class ScreenRoomApp {
-	private final ScreenRoomJpaRepository screenRoomJpaRepository;
-	private final CinemaApp cinemaApp;
+	private final ScreenRoomRepository screenRoomRepository;
+	private final CinemaFinder cinemaFinder;
 
-	@Autowired
-	public ScreenRoomApp(ScreenRoomJpaRepository screenRoomJpaRepository, CinemaApp cinemaApp) {
-		this.screenRoomJpaRepository = screenRoomJpaRepository;
-		this.cinemaApp = cinemaApp;
+	public ScreenRoomApp(ScreenRoomRepository screenRoomRepository, CinemaFinder cinemaFinder) {
+		this.screenRoomRepository = screenRoomRepository;
+		this.cinemaFinder = cinemaFinder;
 	}
 
-	public ScreenRoomDto createScreenRoom(ScreenRoomDto screenRoomDto) {
-		// Cinema가 유효한지 검사
-		try {
-			cinemaApp.findById(screenRoomDto.getCinemaId())
-				.orElseThrow();
-		} catch (NoSuchElementException e) {
-			log.error("등록되지 않은 극장 아이디입니다.");
-			throw new IllegalArgumentException("유효한 cinemaId를 입력해야 합니다.");
+	public ScreenRoom createScreenRoom(CreateScreenRoomRequest createScreenRoomRequest) {
+		// @TODO: 극장(Cinema)가 유효한 극장인지 확인해야할까?
+		Optional<Cinema> cinema = cinemaFinder.findById(createScreenRoomRequest.cinemaId());
+		if (cinema.isEmpty()) {
+			throw new IllegalArgumentException("극장 정보가 유효하지 않습니다.");
 		}
 
-		ScreenRoom entity = screenRoomJpaRepository.save(
-			new ScreenRoom(screenRoomDto.getCinemaId(), screenRoomDto.getScreenNumber()));
-
-		return new ScreenRoomDto(entity);
+		return screenRoomRepository.register(createScreenRoomRequest);
 	}
 
 }
