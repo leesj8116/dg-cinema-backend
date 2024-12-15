@@ -6,27 +6,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import devgraft.dgcinemabackend.cinema.domain.Cinema;
-import devgraft.dgcinemabackend.cinema.domain.CinemaDto;
-import devgraft.dgcinemabackend.cinema.infra.CinemaJpaRepository;
+import devgraft.dgcinemabackend.cinema.domain.CinemaRepository;
+import devgraft.dgcinemabackend.cinema.domain.CreateCinemaRequest;
 
 @Service
 public class CinemaApp {
-	private final CinemaJpaRepository cinemaJpaRepository;
+	private final CinemaRepository cinemaRepository;
 
 	@Autowired
-	public CinemaApp(CinemaJpaRepository cinemaJpaRepository) {
-		this.cinemaJpaRepository = cinemaJpaRepository;
+	public CinemaApp(CinemaRepository cinemaRepository) {
+		this.cinemaRepository = cinemaRepository;
 	}
 
-	public CinemaDto createCinema(CinemaDto cinema) {
-		Cinema entity = cinemaJpaRepository.save(new Cinema(cinema.getName(), cinema.getLocation()));
-
-		return new CinemaDto(entity);
+	public Cinema createCinema(CreateCinemaRequest createCinemaRequest) {
+		return cinemaRepository.register(createCinemaRequest);
 	}
 
-	public Optional<CinemaDto> findById(long id) {
-		Optional<Cinema> cinema = cinemaJpaRepository.findById(id);
-
-		return Optional.of(new CinemaDto(cinema.get()));
+	public Optional<Cinema> findById(Long id) {
+		return cinemaRepository.findById(id);
 	}
 }

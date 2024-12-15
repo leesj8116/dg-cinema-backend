@@ -1,10 +1,11 @@
 package devgraft.dgcinemabackend.cinema.infra;
 
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
 import devgraft.dgcinemabackend.cinema.domain.Cinema;
 
-@Repository
-public interface CinemaJpaRepository extends JpaRepository<Cinema, Long> {
+interface CinemaJpaRepository extends JpaRepository<Cinema, Long> {
+	Optional<Cinema> findById(Long id);
 }
