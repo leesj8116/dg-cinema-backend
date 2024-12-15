@@ -16,7 +16,7 @@ erDiagram
     "Movie(영화)" {
         Long movie_id PK "영화_아이디"
         String title "영화명"
-        String movie_director "영화 감독"
+        String director "영화 감독"
         LocalDate release_date "개봉일 (국내기준)"
     }
     "Cinema(극장)" {

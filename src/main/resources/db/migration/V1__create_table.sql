@@ -50,3 +50,15 @@ CREATE TABLE running_time (
     FOREIGN KEY (movie_id) REFERENCES movie(movie_id),
     FOREIGN KEY (cinema_id, screen_number) REFERENCES screen_room(cinema_id, screen_number)
 );
+
+-- 예약
+CREATE TABLE reservation (
+    reservation_id IDENTITY NOT NULL COMMENT '예약 아이디',
+    user_id BIGINT NOT NULL COMMENT '유저 아이디',
+    running_time_id BIGINT NOT NULL COMMENT '상영시간 아이디',
+    seet_no VARCHAR(10) NOT NULL COMMENT '좌석번호',
+    created_date TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    last_modified_date TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES dg_user(user_id),
+    FOREIGN KEY (running_time_id) REFERENCES running_time(running_time_id)
+);
