@@ -29,11 +29,11 @@ public class RunningTime extends BaseEntity {
 	@Column(nullable = false)
 	private LocalDateTime startTime;            // 상영시작 시간
 
-	@ManyToOne
+	@ManyToOne(fetch = jakarta.persistence.FetchType.EAGER)
 	@JoinColumn(name = "movie_id")
 	private Movie movie;                        // 영화
 
-	@ManyToOne
+	@ManyToOne(fetch = jakarta.persistence.FetchType.EAGER)
 	@JoinColumns({
 		@JoinColumn(name = "cinema_id"),
 		@JoinColumn(name = "screen_number")
