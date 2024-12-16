@@ -1,5 +1,6 @@
 package devgraft.dgcinemabackend.movie.infra;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Component;
@@ -23,6 +24,11 @@ class MovieAdapter implements MovieRepository {
 	@Override
 	public Optional<Movie> find(final Long id) {
 		return movieJpaRepository.findById(id);
+	}
+
+	@Override
+	public List<Movie> findAllByOrderByReleaseDateAsc() {
+		return movieJpaRepository.findAllByOrderByReleaseDateAsc();
 	}
 
 }

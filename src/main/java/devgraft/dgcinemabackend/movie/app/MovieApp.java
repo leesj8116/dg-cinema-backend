@@ -1,5 +1,7 @@
 package devgraft.dgcinemabackend.movie.app;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import devgraft.dgcinemabackend.movie.domain.Movie;
@@ -18,5 +20,9 @@ public class MovieApp {
 		Movie movie = new Movie(context.title(), context.director(), context.releaseDate());
 
 		movieRepository.save(movie);
+	}
+
+	public List<Movie> getMovies() {
+		return movieRepository.findAllByOrderByReleaseDateAsc();
 	}
 }
