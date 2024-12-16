@@ -14,9 +14,7 @@
         <p>
             <span>계정 : </span>
             <input id="account-field" type="email" required/>
-        </p>
-        <p>
-            <span>비밀번호</span>
+            <span>비밀번호 : </span>
             <input id="password-field" type="password" required/>
         </p>
         <p>
@@ -34,10 +32,10 @@
     </div>
 </header>
 <main>
-    <h2>예매하기</h2>
+    <h2>영화별 검색</h2>
     <div>
-        <table>
-            <caption>상영 중인 영화 목록</caption>
+        <table id="movie-list">
+            <caption>영화 목록</caption>
             <colgroup>
                 <col style="width: 55%"/>
                 <col style="width: 20%"/>
@@ -50,20 +48,22 @@
                 <th>개봉일자</th>
                 <th>비고</th>
             </tr>
-            <tr>
+            <tr class="movie">
                 <td>홍길동전</td>
                 <td>홍길동</td>
                 <td>2024-12-16</td>
-                <td><span>검색</span></td>
+                <td><span onclick="passByMovieName(this)">검색</span></td>
             </tr>
         </table>
     </div>
+    <hr/>
+    <h3>상영시간표</h3>
     <div>
         <div id="running-time-seacrh-by-movie">
             <p>
                 <span>영화 제목</span>
                 <input id="search-movie-name" type="text"/>
-                <button type="button" id="search-by-movie-name">검색</button>
+                <button id="search-by-movie-name" type="button">검색</button>
             </p>
         </div>
         <div id="running-time-list-by-movie">
@@ -76,7 +76,7 @@
                     <th>상영시간</th>
                     <th>비고</th>
                 </tr>
-                <tr>
+                <tr class="movie">
                     <td>홍길동전</td>
                     <td>강남</td>
                     <td>2024-12-16</td>

@@ -1,5 +1,9 @@
-#login-info-area {
-    display: none;
+p {
+    margin: 10px 0;
+}
+
+button {
+    padding: 5px 30px;
 }
 
 h1, h2, h3 {
@@ -20,6 +24,10 @@ table {
     border: 1px solid black;
 }
 
+table caption {
+    display: none;
+}
+
 table th, td {
     border: 1px solid black;
 }
@@ -32,4 +40,13 @@ table tr > td:last-child > span {
     color: #0000ff;
     text-decoration: underline;
     cursor: pointer;
+}
+
+#login-info-area {
+    display: none;
+}
+
+#login-area > p {
+    padding-top: 1vh;
+    text-align: center;
 }
