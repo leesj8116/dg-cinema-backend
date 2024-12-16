@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns="http://www.w3.org/1999/html"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>DG-Cinema</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/index.css}">
+    <script th:src="@{/js/index.js}"></script>
+</head>
+<body>
+<header>
+    <form id="login-area">
+        <p>
+            <span>계정 : </span>
+            <input id="account-field" type="email" required/>
+        </p>
+        <p>
+            <span>비밀번호</span>
+            <input id="password-field" type="password" required/>
+        </p>
+        <p>
+            <button type="button" onclick="loginEvent()">로그인</button>
+        </p>
+    </form>
+    <div id="login-info-area">
+        <p>
+            <span id="user-name"></span>
+            <span>님 환영합니다</span>
+        </p>
+        <p>
+            <button onclick="logout()">로그아웃</button>
+        </p>
+    </div>
+</header>
+<main>
+    <h2>예매하기</h2>
+    <div>
+        <table>
+            <caption>상영 중인 영화 목록</caption>
+            <colgroup>
+                <col style="width: 55%"/>
+                <col style="width: 20%"/>
+                <col style="width: 15%"/>
+                <col style="width: 10%"/>
+            </colgroup>
+            <tr>
+                <th>제목</th>
+                <th>감독</th>
+                <th>개봉일자</th>
+                <th>비고</th>
+            </tr>
+            <tr>
+                <td>홍길동전</td>
+                <td>홍길동</td>
+                <td>2024-12-16</td>
+                <td><span>검색</span></td>
+            </tr>
+        </table>
+    </div>
+    <div>
+        <div id="running-time-seacrh-by-movie">
+            <p>
+                <span>영화 제목</span>
+                <input id="search-movie-name" type="text"/>
+                <button type="button" id="search-by-movie-name">검색</button>
+            </p>
+        </div>
+        <div id="running-time-list-by-movie">
+            <table>
+                <caption>검색 결과</caption>
+                <tr>
+                    <th>제목</th>
+                    <th>극장</th>
+                    <th>상영관</th>
+                    <th>상영시간</th>
+                    <th>비고</th>
+                </tr>
+                <tr>
+                    <td>홍길동전</td>
+                    <td>강남</td>
+                    <td>2024-12-16</td>
+                    <td>15:00</td>
+                    <td><span>예매하기</span></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</main>
+</body>
+</html>

@@ -1,0 +1,35 @@
+#login-info-area {
+    display: none;
+}
+
+h1, h2, h3 {
+    text-align: center;
+}
+
+header {
+    height: 12vh;
+    background-color: #eee;
+}
+
+main {
+    width: 100%;
+}
+
+table {
+    width: 100%;
+    border: 1px solid black;
+}
+
+table th, td {
+    border: 1px solid black;
+}
+
+td {
+    text-align: center;
+}
+
+table tr > td:last-child > span {
+    color: #0000ff;
+    text-decoration: underline;
+    cursor: pointer;
+}
