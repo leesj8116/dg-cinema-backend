@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         showLoginInfoArea()
     }
 
-    getMovies()
+    await getMovies()
 })
 
 /**
@@ -22,7 +22,10 @@ const getMovies = async () => {
         })
 }
 
-// 테이블 업데이트 함수
+/**
+ * 화면에 표시된 영화 목록을 갱신한다.
+ * @param movies
+ */
 const updateMovieTable = (movies) => {
     const tableBody = document.getElementById('movie-list');
 
@@ -69,7 +72,7 @@ const updateMovieTable = (movies) => {
  * '로그인' 버튼 클릭시 로그인을 흉내낸다.
  */
 const loginEvent = async () => {
-    const accountElement = document.getElementById('account-field');
+    const accountElement = document.getElementById('account-field')
     const passwordElement = document.getElementById('password-field')
     const accountValue = accountElement.value
     const passwordValue = passwordElement.value
@@ -110,6 +113,10 @@ const loginEvent = async () => {
             localStorage.setItem('nickname', '몰?루는 유저')
     }
     showLoginInfoArea()
+
+    // 로그인 처리 후 계정, 비밀번호 필드는 초기화
+    accountElement.value = '';
+    passwordElement.value = '';
 }
 
 /**
@@ -118,6 +125,8 @@ const loginEvent = async () => {
 const logout = () => {
     localStorage.clear()
     hideLoginInfoArea()
+    // 계정 입력 란에 포커스
+    document.getElementById('account-field').focus()
 }
 
 /**
@@ -143,5 +152,5 @@ const hideLoginInfoArea = () => {
 const passByMovieName = (target) => {
     const movieName = target.parentElement.parentElement.firstElementChild.innerText
     document.getElementById('search-movie-name').value = movieName
-    document.getElementById('search-by-movie-name').focus()
+    document.getElementById('search-movie-name-btn').focus()
 }
