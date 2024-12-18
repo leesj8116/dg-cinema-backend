@@ -9,4 +9,6 @@ public interface MovieRepository {
 	Optional<Movie> find(Long id);
 
 	List<Movie> findAllByOrderByReleaseDateAsc();
+
+	List<Movie> findAllByTitleContainingOrderByReleaseDateAsc(String title);
 }

@@ -52,7 +52,7 @@
                 <td>홍길동전</td>
                 <td>홍길동</td>
                 <td>2024-12-16</td>
-                <td><span onclick="passByMovieName(this)">검색</span></td>
+                <td><span onclick="passByMovieTitle(this)">검색</span></td>
             </tr>
         </table>
     </div>
@@ -62,12 +62,12 @@
         <div id="running-time-seacrh-by-movie">
             <p>
                 <span>영화 제목</span>
-                <input id="search-movie-name" type="text"/>
-                <button id="search-movie-name-btn" type="button">검색</button>
+                <input id="search-movie-title" type="text"/>
+                <button id="search-movie-title-btn" type="button" onclick="searchRunningTimeByMovietitle()">검색</button>
             </p>
         </div>
         <div id="running-time-list-by-movie">
-            <table>
+            <table id="running-time">
                 <caption>검색 결과</caption>
                 <tr>
                     <th>제목</th>
@@ -76,7 +76,7 @@
                     <th>상영시간</th>
                     <th>비고</th>
                 </tr>
-                <tr class="movie">
+                <tr class="running-time">
                     <td>홍길동전</td>
                     <td>강남</td>
                     <td>2024-12-16</td>

@@ -31,4 +31,8 @@ class MovieAdapter implements MovieRepository {
 		return movieJpaRepository.findAllByOrderByReleaseDateAsc();
 	}
 
+	@Override
+	public List<Movie> findAllByTitleContainingOrderByReleaseDateAsc(String title) {
+		return movieJpaRepository.findAllByTitleContainingOrderByReleaseDateAsc(title);
+	}
 }

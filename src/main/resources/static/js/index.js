@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     await getMovies()
+    await searchRunningTimeByMovietitle()
 })
 
 /**
@@ -23,7 +24,25 @@ const getMovies = async () => {
 }
 
 /**
- * 화면에 표시된 영화 목록을 갱신한다.
+ * 영화 제목 입력을 통해 영화를 조회한다.
+ * @param title
+ * @returns {Promise<void>}
+ */
+const searchRunningTimeByMovietitle = async () => {
+    const title = document.getElementById('search-movie-title').value
+    const queryString = new URLSearchParams({'title': title}).toString()
+
+    await fetch(`/running-time?${queryString}`)
+        .then((response) => response.json())
+        .then((json) => {
+            uploadRunningTimetable(json)
+        }).catch((error) => {
+            console.error(error)
+        })
+}
+
+/**
+ * 화면에 표시된 영화 목록을 갱신한다. (도움 - chatGPT4o)
  * @param movies
  */
 const updateMovieTable = (movies) => {
@@ -54,7 +73,7 @@ const updateMovieTable = (movies) => {
         const actionCell = document.createElement('td');
         const searchSpan = document.createElement('span');
         searchSpan.textContent = '검색';
-        searchSpan.setAttribute('onclick', 'passByMovieName(this)');
+        searchSpan.setAttribute('onclick', `passByMovieTitle(${movie.title})`);
         actionCell.appendChild(searchSpan);
 
         // 행 구성
@@ -67,6 +86,57 @@ const updateMovieTable = (movies) => {
         tableBody.appendChild(row);
     });
 };
+
+/**
+ * 상영시간표를 갱신한다.
+ * @param runningTimes
+ */
+const uploadRunningTimetable = (runningTimes) => {
+    const tableBody = document.getElementById('running-time');
+
+    // 기존 상영시간 데이터 제거
+    const existingRows = tableBody.querySelectorAll('tr.running-time');
+    existingRows.forEach(row => row.remove());
+
+    // 새로운 상영시간 데이터 추가
+    runningTimes.forEach(runningTime => {
+        const row = document.createElement('tr');
+        row.className = 'running-time';
+
+        // 제목
+        const titleCell = document.createElement('td');
+        titleCell.textContent = runningTime.movie.title;
+
+        // 극장
+        const CinemaCell = document.createElement('td');
+        CinemaCell.textContent = runningTime.screenRoom.cinemaId;
+
+        // 상영관
+        const screenRoomCell = document.createElement('td');
+        screenRoomCell.textContent = `${runningTime.screenRoom.screenNumber}관`;
+
+        // 상영시간
+        const startTimeCell = document.createElement('td');
+        startTimeCell.textContent = runningTime.startTime;
+
+        // 비고
+        const actionCell = document.createElement('td');
+        const searchSpan = document.createElement('span');
+        searchSpan.textContent = '예매하기';
+        searchSpan.setAttribute('onclick', 'passByMovieTitle(this)');
+        actionCell.appendChild(searchSpan);
+
+        // 행 구성
+        row.appendChild(titleCell);
+        row.appendChild(CinemaCell);
+        row.appendChild(screenRoomCell);
+        row.appendChild(startTimeCell);
+        row.appendChild(actionCell);
+
+        // 테이블에 행 추가
+        tableBody.appendChild(row);
+    });
+}
 
 /**
  * '로그인' 버튼 클릭시 로그인을 흉내낸다.
@@ -149,8 +219,7 @@ const hideLoginInfoArea = () => {
 /**
  * '검색' 버튼을 클릭시, 해당 줄의 영화 제목을 검색창으로 전달한다.
  */
-const passByMovieName = (target) => {
-    const movieName = target.parentElement.parentElement.firstElementChild.innerText
-    document.getElementById('search-movie-name').value = movieName
-    document.getElementById('search-movie-name-btn').focus()
+const passByMovieTitle = (movieName) => {
+    document.getElementById('search-movie-title').value = movieName
+    document.getElementById('search-movie-title-btn').focus()
 }

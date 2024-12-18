@@ -8,4 +8,5 @@ import devgraft.dgcinemabackend.movie.domain.Movie;
 
 interface MovieJpaRepository extends JpaRepository<Movie, Long> {
 	List<Movie> findAllByOrderByReleaseDateAsc();
+	List<Movie> findAllByTitleContainingOrderByReleaseDateAsc(String title);
 }
