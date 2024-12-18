@@ -35,6 +35,7 @@ const searchRunningTimeByMovietitle = async () => {
     await fetch(`/running-time?${queryString}`)
         .then((response) => response.json())
         .then((json) => {
+            console.log('상영시간 정보', json)
             uploadRunningTimetable(json)
         }).catch((error) => {
             console.error(error)
@@ -100,6 +101,31 @@ const uploadRunningTimetable = (runningTimes) => {
 
     // 새로운 상영시간 데이터 추가
     runningTimes.forEach(runningTime => {
+        //// 상영 시간 계산
+        const date = new Date(runningTime.startTime);
+
+        const dateString = date.toLocaleString('ko-KR', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: false // 24시간 형식으로
+        });
+
+        // 날짜와 시간을 분리
+        const datePart = dateString.substring(0, 14)
+        const timePart = dateString.substring(14)
+
+        // 날짜 부분을 '년 월 일' 형식으로 변환
+        const [year, month, day] = datePart.split('.').map(part => part.trim());
+        const formattedDate = `${year}년 ${month}월 ${day}일`;
+
+        // 시간 부분을 '시 분' 형식으로 변환
+        const [hour, minute] = timePart.split(':');
+        const formattedTime = `${hour}시 ${minute}분`;
+
         const row = document.createElement('tr');
         row.className = 'running-time';
 
@@ -108,28 +134,40 @@ const uploadRunningTimetable = (runningTimes) => {
         titleCell.textContent = runningTime.movie.title;
 
         // 극장
-        const CinemaCell = document.createElement('td');
-        CinemaCell.textContent = runningTime.screenRoom.cinemaId;
+        const cinemaCell = document.createElement('td');
+        cinemaCell.textContent = runningTime.screenRoom.cinemaId;
 
         // 상영관
         const screenRoomCell = document.createElement('td');
         screenRoomCell.textContent = `${runningTime.screenRoom.screenNumber}관`;
 
+        // 상영일
+        const startDateCell = document.createElement('td');
+        startDateCell.textContent = formattedDate;
+
         // 상영시간
         const startTimeCell = document.createElement('td');
-        startTimeCell.textContent = runningTime.startTime;
+        startTimeCell.textContent = formattedTime;
 
         // 비고
         const actionCell = document.createElement('td');
         const searchSpan = document.createElement('span');
+
         searchSpan.textContent = '예매하기';
-        searchSpan.setAttribute('onclick', 'passByMovieTitle(this)');
+
+        // 이미 상영을 시작했다면 예약 이벤트 제거
+        if (date < new Date()) {
+            searchSpan.classList.add('past');
+        } else {
+            searchSpan.setAttribute('onclick', 'passByMovieTitle(this)');
+        }
         actionCell.appendChild(searchSpan);
 
         // 행 구성
         row.appendChild(titleCell);
-        row.appendChild(CinemaCell);
+        row.appendChild(cinemaCell);
         row.appendChild(screenRoomCell);
+        row.appendChild(startDateCell);
         row.appendChild(startTimeCell);
         row.appendChild(actionCell);
 

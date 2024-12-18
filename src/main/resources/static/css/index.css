@@ -42,6 +42,12 @@ table tr > td:last-child > span {
     cursor: pointer;
 }
 
+table tr > td:last-child > span.past {
+    color: #999;
+    text-decoration: line-through;
+    cursor: default;
+}
+
 #login-info-area {
     display: none;
 }
