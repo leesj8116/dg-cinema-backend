@@ -6,4 +6,5 @@ public interface DgUserRepository {
 	DgUser save(CreateUserRequest request);
 
 	Optional<DgUser> findByAccount(String account);
+	Optional<DgUser> findById(Long id);
 }

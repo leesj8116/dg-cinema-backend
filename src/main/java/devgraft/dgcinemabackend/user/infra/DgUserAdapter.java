@@ -29,4 +29,9 @@ class DgUserAdapter implements DgUserRepository {
 	public Optional<DgUser> findByAccount(final String account) {
 		return dgUserJpaRepository.findByAccount(account);
 	}
+
+	@Override
+	public Optional<DgUser> findById(Long id) {
+		return dgUserJpaRepository.findById(id);
+	}
 }

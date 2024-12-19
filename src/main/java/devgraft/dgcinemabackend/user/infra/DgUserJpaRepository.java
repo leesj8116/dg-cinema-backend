@@ -8,4 +8,5 @@ import devgraft.dgcinemabackend.user.domain.DgUser;
 
 interface DgUserJpaRepository extends JpaRepository<DgUser, Long> {
 	Optional<DgUser> findByAccount(String account);
+	Optional<DgUser> findById(Long id);
 }

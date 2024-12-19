@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import devgraft.dgcinemabackend.reservation.app.ReservationApp;
+import devgraft.dgcinemabackend.reservation.domain.Reservation;
+import devgraft.dgcinemabackend.reservation.domain.ReservationContext;
 
 @RestController
 public class ReservationApi {
@@ -23,5 +25,9 @@ public class ReservationApi {
 	@GetMapping("/reservation/seat")
 	public List<String> seatCheck(@RequestParam(name = "runningTime") Long runningTimeId) {
 		return reservationApp.seatCheck(runningTimeId);
+	}
+
+	public Reservation register(ReservationContext context) {
+		return reservationApp.register(context);
 	}
 }
