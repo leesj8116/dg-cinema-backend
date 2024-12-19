@@ -1,7 +1,6 @@
 package devgraft.dgcinemabackend.runningtime.app;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -25,12 +24,6 @@ public class RunningTimeApp {
 		// List<Movie> movies = (movieTitle == null || movieTitle.isBlank()) ? movieFinder.findAllMovies() : movieFinder.findMoviesByMovieTitle(movieTitle);
 		List<Movie> movies = movieFinder.findMoviesByMovieTitle(movieTitle);
 
-		List<RunningTime> runningTimes = new ArrayList<>();
-
-		for(Movie movie : movies) {
-			runningTimes.addAll(runningTimeRepository.findAllByStartTimeGreaterThanEqualAndMovie(LocalDateTime.now(), movie));
-		}
-
-		return runningTimes;
+		return runningTimeRepository.findAllByStartTimeGreaterThanEqualAndMovieIn(LocalDateTime.now(), movies);
 	}
 }

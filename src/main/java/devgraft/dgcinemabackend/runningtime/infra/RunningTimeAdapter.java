@@ -23,7 +23,7 @@ class RunningTimeAdapter implements RunningTimeRepository {
 	}
 
 	@Override
-	public List<RunningTime> findAllByStartTimeGreaterThanEqualAndMovie(LocalDateTime startTimeAfter, Movie movie) {
-		return runningTimeJpaRepository.findAllByStartTimeGreaterThanEqualAndMovie(startTimeAfter, movie);
+	public List<RunningTime> findAllByStartTimeGreaterThanEqualAndMovieIn(LocalDateTime startTimeIsGreaterThan, List<Movie> movies) {
+		return runningTimeJpaRepository.findAllByStartTimeGreaterThanEqualAndMovieIn(startTimeIsGreaterThan, movies);
 	}
 }

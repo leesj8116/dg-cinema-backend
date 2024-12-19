@@ -7,5 +7,5 @@ import devgraft.dgcinemabackend.movie.domain.Movie;
 
 public interface RunningTimeRepository {
 	List<RunningTime> findAllByMovie(Movie movie);
-	List<RunningTime> findAllByStartTimeGreaterThanEqualAndMovie(LocalDateTime startTimeAfter, Movie movie);
+	List<RunningTime> findAllByStartTimeGreaterThanEqualAndMovieIn(LocalDateTime startTimeIsGreaterThan, List<Movie> movies);
 }

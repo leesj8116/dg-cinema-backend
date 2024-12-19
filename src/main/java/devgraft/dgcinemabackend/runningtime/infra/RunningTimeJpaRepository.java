@@ -10,5 +10,6 @@ import devgraft.dgcinemabackend.runningtime.domain.RunningTime;
 
 interface RunningTimeJpaRepository extends JpaRepository<RunningTime, Long> {
 	List<RunningTime> findAllByMovie(Movie movie);
-	List<RunningTime> findAllByStartTimeGreaterThanEqualAndMovie(LocalDateTime startTimeAfter, Movie movie);
+
+	List<RunningTime> findAllByStartTimeGreaterThanEqualAndMovieIn(LocalDateTime startTimeIsGreaterThan, List<Movie> movies);
 }
