@@ -39,4 +39,8 @@ public class RunningTime extends BaseEntity {
 		@JoinColumn(name = "screen_number")
 	})
 	private ScreenRoom screenRoom;              // 상영관
+
+	public RunningTime(final Long runningTimeId) {
+		this.runningTimeId = runningTimeId;
+	}
 }

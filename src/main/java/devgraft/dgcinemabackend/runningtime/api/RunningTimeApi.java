@@ -17,6 +17,11 @@ public class RunningTimeApi {
 		this.runningTimeApp = runningTimeApp;
 	}
 
+	/**
+	 * 영화의 상영 일정을 조회한다. (영화 제목 미입력시 전체 조회)
+	 * @param title
+	 * @return
+	 */
 	@GetMapping("/running-time")
 	public List<RunningTime> getRunningTimesByMovieTitle(@RequestParam(name = "title") String title) {
 		return runningTimeApp.getRunningTimesByMovieTitle(title);

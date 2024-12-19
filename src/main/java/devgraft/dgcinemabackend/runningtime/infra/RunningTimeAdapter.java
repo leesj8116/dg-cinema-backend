@@ -2,6 +2,7 @@ package devgraft.dgcinemabackend.runningtime.infra;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Component;
 
@@ -25,5 +26,10 @@ class RunningTimeAdapter implements RunningTimeRepository {
 	@Override
 	public List<RunningTime> findAllByStartTimeGreaterThanEqualAndMovieIn(LocalDateTime startTimeIsGreaterThan, List<Movie> movies) {
 		return runningTimeJpaRepository.findAllByStartTimeGreaterThanEqualAndMovieIn(startTimeIsGreaterThan, movies);
+	}
+
+	@Override
+	public Optional<RunningTime> findById(Long runningTimeId) {
+		return runningTimeJpaRepository.findById(runningTimeId);
 	}
 }
