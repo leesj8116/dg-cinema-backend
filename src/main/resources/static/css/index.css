@@ -61,3 +61,15 @@ table tr > td:last-child > span.past {
     max-height: 20vh;
     overflow-y: scroll;
 }
+
+#reservation-seat-info thead td {
+    font-size: 2em;
+}
+
+#reservation-seat-info-body td {
+    width: auto
+}
+
+#reservation-seat-info-body td.already {
+    background-color: #999999;
+}

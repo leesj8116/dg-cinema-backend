@@ -1,3 +1,11 @@
+// 공통
+
+// @TODO: 좌석 체계 점검
+// 더 좋은 방법이 있을텐데......
+const seatsRow = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
+const seatsCol = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'];
+
+
 document.addEventListener('DOMContentLoaded', async () => {
     if (localStorage.getItem('account') === null) {
         hideLoginInfoArea()
@@ -155,11 +163,12 @@ const uploadRunningTimetable = (runningTimes) => {
 
         searchSpan.textContent = '예매하기';
 
-        // 이미 상영을 시작했다면 예약 이벤트 제거
         if (date < new Date()) {
+            // 이미 상영을 시작했다면 예약 이벤트 제거
             searchSpan.classList.add('past');
         } else {
-            searchSpan.setAttribute('onclick', 'passByMovieTitle(this)');
+            // 아직 상영 전이라면 좌석 확인으로 안내
+            searchSpan.setAttribute('onclick', `reservationCheckSeat('${runningTime.runningTimeId}')`);
         }
         actionCell.appendChild(searchSpan);
 
@@ -260,4 +269,55 @@ const hideLoginInfoArea = () => {
 const passByMovieTitle = (movieName) => {
     document.getElementById('search-movie-title').value = movieName
     document.getElementById('search-movie-title-btn').focus()
+}
+
+
+/**
+ * 선택한 상영 시간의 잔여 좌석을 확인한다.
+ * @returns {Promise<void>}
+ */
+const reservationCheckSeat = async (runningTimeId) => {
+    const queryString = new URLSearchParams({'runningTime': runningTimeId}).toString()
+
+    await fetch(`/reservation/seat?${queryString}`)
+        .then((response) => response.json())
+        .then((json) => {
+            updateReservationSeat(json)
+        }).catch((error) => {
+            console.error(error)
+        })
+}
+
+/**
+ * 예약 좌석 현황을 그려준다
+ * @param seats
+ */
+const updateReservationSeat = (seats) => {
+    console.log('좌석 정보', seats)
+    const tableBody = document.getElementById('reservation-seat-info-body');
+    // 기존 데이터 삭제
+    const existingRows = tableBody.querySelectorAll('tr');
+    existingRows.forEach(row => row.remove());
+
+    // 표 생성
+
+    seatsRow.forEach(r => {
+        const row = document.createElement('tr');
+
+        seatsCol.forEach(c => {
+            const td = document.createElement('td');
+            td.id = `${r}${c}`
+            td.innerText = `${r}${c}`
+
+            if (seats.indexOf(`${r}${c}`) !== -1) {
+                td.classList.add('already') // 예약된 자리는 다르게 표시
+            }
+
+            row.appendChild(td)
+        })
+
+        tableBody.appendChild(row)
+    })
+
+
 }
