@@ -1,11 +1,10 @@
 package devgraft.dgcinemabackend.runningtime.app;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
 
 import devgraft.dgcinemabackend.movie.domain.Movie;
 import devgraft.dgcinemabackend.runningtime.domain.MovieFinder;
@@ -29,7 +28,7 @@ public class RunningTimeApp {
 		List<RunningTime> runningTimes = new ArrayList<>();
 
 		for(Movie movie : movies) {
-			runningTimes.addAll(runningTimeRepository.findAllByMovie(movie));
+			runningTimes.addAll(runningTimeRepository.findAllByStartTimeGreaterThanEqualAndMovie(LocalDateTime.now(), movie));
 		}
 
 		return runningTimes;
