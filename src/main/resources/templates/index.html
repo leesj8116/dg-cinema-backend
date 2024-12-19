@@ -67,17 +67,21 @@
             </p>
         </div>
         <div id="running-time-list-by-movie">
-            <table id="running-time">
+            <table>
                 <caption>검색 결과</caption>
-                <tr>
-                    <th>제목</th>
-                    <th>극장</th>
-                    <th>상영관</th>
-                    <th>상영일</th>
-                    <th>상영시간</th>
-                    <th>비고</th>
-                </tr>
-                <tr class="running-time"></tr>
+                <thead>
+                    <tr>
+                        <th>제목</th>
+                        <th>극장</th>
+                        <th>상영관</th>
+                        <th>상영일</th>
+                        <th>상영시간</th>
+                        <th>비고</th>
+                    </tr>
+                </thead>
+                <tbody id="running-time-body">
+                    <tr class="running-time"></tr>
+                </tbody>
             </table>
         </div>
     </div>

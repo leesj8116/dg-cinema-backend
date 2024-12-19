@@ -93,7 +93,7 @@ const updateMovieTable = (movies) => {
  * @param runningTimes
  */
 const uploadRunningTimetable = (runningTimes) => {
-    const tableBody = document.getElementById('running-time');
+    const tableBody = document.getElementById('running-time-body');
 
     // 기존 상영시간 데이터 제거
     const existingRows = tableBody.querySelectorAll('tr.running-time');

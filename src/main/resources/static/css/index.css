@@ -56,3 +56,8 @@ table tr > td:last-child > span.past {
     padding-top: 1vh;
     text-align: center;
 }
+
+#running-time-list-by-movie {
+    max-height: 20vh;
+    overflow-y: scroll;
+}
