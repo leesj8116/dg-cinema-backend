@@ -1,18 +1,26 @@
 package devgraft.dgcinemabackend.cinema.domain;
 
+import java.util.List;
+
 import devgraft.dgcinemabackend.common.domain.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
+@Builder
 @Table(name = "cinema")
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 public class Cinema extends BaseEntity {
 	@Id
@@ -25,21 +33,7 @@ public class Cinema extends BaseEntity {
 	@Column(nullable = false, length = 200)
 	private String location;    // 영화관 주소
 
-	public Cinema(Long cinemaId) {
-		super();
-		this.cinemaId = cinemaId;
-	}
-
-	public Cinema(Long cinemaId, String name, String location) {
-		super();
-		this.cinemaId = cinemaId;
-		this.name = name;
-		this.location = location;
-	}
-
-	public Cinema(String name, String location) {
-		super();
-		this.name = name;
-		this.location = location;
-	}
+	@OneToMany
+	@JoinColumn(name = "cinema_id")
+	private List<ScreenRoom> screenRoomList;
 }

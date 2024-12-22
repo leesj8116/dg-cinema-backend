@@ -9,13 +9,16 @@ import org.springframework.web.bind.annotation.RestController;
 import devgraft.dgcinemabackend.reservation.app.ReservationApp;
 import devgraft.dgcinemabackend.reservation.domain.Reservation;
 import devgraft.dgcinemabackend.reservation.domain.ReservationContext;
+import devgraft.dgcinemabackend.user.domain.DgUserRepository;
 
 @RestController
 public class ReservationApi {
 	private final ReservationApp reservationApp;
+	private final DgUserRepository dgUserRepository;
 
-	public ReservationApi(ReservationApp reservationApp) {
+	public ReservationApi(ReservationApp reservationApp, DgUserRepository dgUserRepository) {
 		this.reservationApp = reservationApp;
+		this.dgUserRepository = dgUserRepository;
 	}
 
 	/**
@@ -28,6 +31,10 @@ public class ReservationApi {
 	}
 
 	public Reservation register(ReservationContext context) {
-		return reservationApp.register(context);
+		// return reservationApp.register(context);
+		dgUserRepository.findById(context.userId())
+			.orElseThrow(() -> new IllegalArgumentException("User does not exist"));
+
+		return null;
 	}
 }

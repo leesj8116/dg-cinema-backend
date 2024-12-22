@@ -7,12 +7,16 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
+@Builder
 @Table(name = "dg_user")
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 public class DgUser extends BaseEntity {
 	@Id
@@ -27,16 +31,4 @@ public class DgUser extends BaseEntity {
 
 	@Column(nullable = false, length = 30)
 	private String nickname;    // 사용자_이름
-
-	public DgUser(Long userId, String account, String password, String nickname) {
-		super();
-		this.userId = userId;
-		this.account = account;
-		this.password = password;
-		this.nickname = nickname;
-	}
-
-	public DgUser(String account, String password, String nickname) {
-		this(null, account, password, nickname);
-	}
 }

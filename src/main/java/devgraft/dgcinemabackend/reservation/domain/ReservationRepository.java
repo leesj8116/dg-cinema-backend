@@ -3,7 +3,7 @@ package devgraft.dgcinemabackend.reservation.domain;
 import java.util.List;
 
 public interface ReservationRepository {
-	List<Reservation> findAllByRunningTime(Long runningTimeId);
+	List<Reservation> findAllByRunningTime(final Long runningTimeId);
 
-	Reservation save(ReservationContext context);
+	Reservation save(final Reservation reservation);
 }

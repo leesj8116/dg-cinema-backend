@@ -1,4 +1,4 @@
-package devgraft.dgcinemabackend.screenroom.domain;
+package devgraft.dgcinemabackend.cinema.domain;
 
 import java.io.Serializable;
 

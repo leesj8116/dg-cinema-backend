@@ -1,28 +1,24 @@
 package devgraft.dgcinemabackend.cinema.app;
 
-import java.util.Optional;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import devgraft.dgcinemabackend.cinema.domain.Cinema;
 import devgraft.dgcinemabackend.cinema.domain.CinemaRepository;
-import devgraft.dgcinemabackend.cinema.domain.CreateCinemaRequest;
+import lombok.RequiredArgsConstructor;
 
 @Service
-public class CinemaApp {
+@RequiredArgsConstructor
+public class CinemaApp implements CinemaUseCase {
 	private final CinemaRepository cinemaRepository;
 
-	@Autowired
-	public CinemaApp(CinemaRepository cinemaRepository) {
-		this.cinemaRepository = cinemaRepository;
-	}
+	@Override
+	public CinemaResult createCinema(CreateCinemaRequest createCinemaRequest) {
 
-	public Cinema createCinema(CreateCinemaRequest createCinemaRequest) {
-		return cinemaRepository.register(createCinemaRequest);
-	}
+		Cinema cinemaEntity = cinemaRepository.register(Cinema.builder()
+			.name(createCinemaRequest.name())
+			.location(createCinemaRequest.location())
+			.build());
 
-	public Optional<Cinema> findById(Long id) {
-		return cinemaRepository.findById(id);
+		return new CinemaResult(cinemaEntity.getName(), cinemaEntity.getLocation());
 	}
 }

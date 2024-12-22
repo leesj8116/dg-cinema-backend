@@ -1,26 +1,18 @@
-package devgraft.dgcinemabackend.screenroom.infra;
+package devgraft.dgcinemabackend.cinema.infra;
 
 import org.springframework.stereotype.Component;
 
-import devgraft.dgcinemabackend.screenroom.domain.CreateScreenRoomRequest;
-import devgraft.dgcinemabackend.screenroom.domain.ScreenRoom;
-import devgraft.dgcinemabackend.screenroom.domain.ScreenRoomRepository;
+import devgraft.dgcinemabackend.cinema.domain.ScreenRoom;
+import devgraft.dgcinemabackend.cinema.domain.ScreenRoomRepository;
+import lombok.RequiredArgsConstructor;
 
 @Component
+@RequiredArgsConstructor
 public class ScreenRoomAdapter implements ScreenRoomRepository {
 	private final ScreenRoomJpaRepository screenRoomJpaRepository;
 
-	public ScreenRoomAdapter(ScreenRoomJpaRepository screenRoomJpaRepository) {
-		this.screenRoomJpaRepository = screenRoomJpaRepository;
-	}
-
 	@Override
-	public ScreenRoom register(CreateScreenRoomRequest createScreenRoomRequest) {
-		ScreenRoom screenRoom = new ScreenRoom(
-			createScreenRoomRequest.cinemaId(),
-			createScreenRoomRequest.screenNumber()
-		);
-
+	public ScreenRoom register(ScreenRoom screenRoom) {
 		return screenRoomJpaRepository.save(screenRoom);
 	}
 }

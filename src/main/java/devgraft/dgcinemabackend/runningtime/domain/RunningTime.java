@@ -2,9 +2,9 @@ package devgraft.dgcinemabackend.runningtime.domain;
 
 import java.time.LocalDateTime;
 
+import devgraft.dgcinemabackend.cinema.domain.ScreenRoom;
 import devgraft.dgcinemabackend.common.domain.BaseEntity;
 import devgraft.dgcinemabackend.movie.domain.Movie;
-import devgraft.dgcinemabackend.screenroom.domain.ScreenRoom;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -14,12 +14,16 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinColumns;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
+@Builder
 @Table(name = "running_time")
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 public class RunningTime extends BaseEntity {
 	@Id
@@ -39,8 +43,4 @@ public class RunningTime extends BaseEntity {
 		@JoinColumn(name = "screen_number")
 	})
 	private ScreenRoom screenRoom;              // 상영관
-
-	public RunningTime(final Long runningTimeId) {
-		this.runningTimeId = runningTimeId;
-	}
 }

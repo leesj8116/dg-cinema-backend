@@ -9,19 +9,15 @@ import devgraft.dgcinemabackend.movie.domain.Movie;
 import devgraft.dgcinemabackend.runningtime.domain.MovieFinder;
 import devgraft.dgcinemabackend.runningtime.domain.RunningTime;
 import devgraft.dgcinemabackend.runningtime.domain.RunningTimeRepository;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class RunningTimeApp {
 	private final RunningTimeRepository runningTimeRepository;
 	private final MovieFinder movieFinder;
 
-	public RunningTimeApp(RunningTimeRepository runningTimeRepository, MovieFinder movieFinder) {
-		this.runningTimeRepository = runningTimeRepository;
-		this.movieFinder = movieFinder;
-	}
-
 	public List<RunningTime> getRunningTimesByMovieTitle(String movieTitle) {
-		// List<Movie> movies = (movieTitle == null || movieTitle.isBlank()) ? movieFinder.findAllMovies() : movieFinder.findMoviesByMovieTitle(movieTitle);
 		List<Movie> movies = movieFinder.findMoviesByMovieTitle(movieTitle);
 
 		return runningTimeRepository.findAllByStartTimeGreaterThanEqualAndMovieIn(LocalDateTime.now(), movies);

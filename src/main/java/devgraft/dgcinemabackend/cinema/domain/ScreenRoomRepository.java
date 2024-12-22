@@ -1,5 +1,5 @@
-package devgraft.dgcinemabackend.screenroom.domain;
+package devgraft.dgcinemabackend.cinema.domain;
 
 public interface ScreenRoomRepository {
-	ScreenRoom register(CreateScreenRoomRequest createScreenRoomRequest);
+	ScreenRoom register(ScreenRoom screenRoom);
 }

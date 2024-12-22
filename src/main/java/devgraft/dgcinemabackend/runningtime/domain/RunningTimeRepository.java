@@ -7,7 +7,10 @@ import java.util.Optional;
 import devgraft.dgcinemabackend.movie.domain.Movie;
 
 public interface RunningTimeRepository {
-	List<RunningTime> findAllByMovie(Movie movie);
-	List<RunningTime> findAllByStartTimeGreaterThanEqualAndMovieIn(LocalDateTime startTimeIsGreaterThan, List<Movie> movies);
-	Optional<RunningTime> findById(Long runningTimeId);
+	List<RunningTime> findAllByMovie(final Movie movie);
+
+	List<RunningTime> findAllByStartTimeGreaterThanEqualAndMovieIn(final LocalDateTime startTimeIsGreaterThan,
+		List<Movie> movies);
+
+	Optional<RunningTime> findById(final Long runningTimeId);
 }

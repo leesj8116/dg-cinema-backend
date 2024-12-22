@@ -8,7 +8,7 @@ import devgraft.dgcinemabackend.reservation.domain.Reservation;
 import devgraft.dgcinemabackend.runningtime.domain.RunningTime;
 
 interface ReservationJpaRepository extends JpaRepository<Reservation, Long> {
-	List<Reservation> findAllByRunningTime(RunningTime runningTime);
+	List<Reservation> findAllByRunningTime(final RunningTime runningTime);
 
-	Reservation save(Reservation entity);
+	Reservation save(final Reservation entity);
 }

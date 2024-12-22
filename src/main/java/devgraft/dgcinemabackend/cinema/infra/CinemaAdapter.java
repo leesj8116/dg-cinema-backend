@@ -6,23 +6,15 @@ import org.springframework.stereotype.Component;
 
 import devgraft.dgcinemabackend.cinema.domain.Cinema;
 import devgraft.dgcinemabackend.cinema.domain.CinemaRepository;
-import devgraft.dgcinemabackend.cinema.domain.CreateCinemaRequest;
+import lombok.RequiredArgsConstructor;
 
 @Component
+@RequiredArgsConstructor
 class CinemaAdapter implements CinemaRepository {
 	private final CinemaJpaRepository cinemaJpaRepository;
 
-	CinemaAdapter(CinemaJpaRepository cinemaJpaRepository) {
-		this.cinemaJpaRepository = cinemaJpaRepository;
-	}
-
 	@Override
-	public Cinema register(CreateCinemaRequest createCinemaRequest) {
-		Cinema cinema = new Cinema(
-			createCinemaRequest.name(),
-			createCinemaRequest.address()
-		);
-
+	public Cinema register(Cinema cinema) {
 		return cinemaJpaRepository.save(cinema);
 	}
 
@@ -30,5 +22,4 @@ class CinemaAdapter implements CinemaRepository {
 	public Optional<Cinema> findById(Long id) {
 		return cinemaJpaRepository.findById(id);
 	}
-
 }

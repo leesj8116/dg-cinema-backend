@@ -15,6 +15,10 @@ public class DgUserApp {
 	}
 
 	public DgUser register(CreateUserRequest request) {
-		return dgUserRepository.save(request);
+		return dgUserRepository.save(DgUser.builder()
+			.account(request.account())
+			.password(request.password())
+			.nickname(request.nickname())
+			.build());
 	}
 }
