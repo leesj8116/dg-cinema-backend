@@ -9,9 +9,9 @@ title: dg-cinema Stage 1 설계
 erDiagram
     "User(사용자)" {
         Long user_id PK "사용자_엔티티"
-        string account "계정"
-        string password "비밀번호"
-        string nickname "사용자_이름"
+        String account "계정"
+        String password "비밀번호"
+        String nickname "사용자_이름"
     }
     "Movie(영화)" {
         Long movie_id PK "영화_아이디"
@@ -21,13 +21,14 @@ erDiagram
     }
     "Cinema(극장)" {
         Long cinema_id PK "극장_아이디"
-        string name "극장명"
-        string location "극장 위치"
+        String name "극장명"
+        String location "극장 위치"
     }
 
     "ScreenRoom(상영관)" {
         Long cinema_id PK, FK "극장_아이디"
         Long screen_number PK "상영관_번호"
+        String screen_room_name "상영관_이름"
     }
 
     "Reservation(예약)" {
@@ -38,9 +39,9 @@ erDiagram
     }
 
     "RunningTime(상영시간)" {
-        Long running_time_id "상영시간_아이디"
+        Long running_time_id PK "상영시간_아이디"
         Long movie_id FK "영화_아이디"
-        UUID cinema_id FK "극장_아이디"
+        Long cinema_id FK "극장_아이디"
         Long screen_no FK "상영관_번호"
         LocalDateTime start_time "상영시작시간"
     }
