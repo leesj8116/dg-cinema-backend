@@ -82,7 +82,7 @@ const updateMovieTable = (movies) => {
         const actionCell = document.createElement('td');
         const searchSpan = document.createElement('span');
         searchSpan.textContent = '검색';
-        searchSpan.setAttribute('onclick', `passByMovieTitle(${movie.title})`);
+        searchSpan.setAttribute('onclick', `passByMovieTitle('${movie.title}')`);
         actionCell.appendChild(searchSpan);
 
         // 행 구성
