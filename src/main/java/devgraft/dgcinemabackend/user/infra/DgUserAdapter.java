@@ -6,14 +6,12 @@ import org.springframework.stereotype.Component;
 
 import devgraft.dgcinemabackend.user.domain.DgUser;
 import devgraft.dgcinemabackend.user.domain.DgUserRepository;
+import lombok.RequiredArgsConstructor;
 
 @Component
+@RequiredArgsConstructor
 class DgUserAdapter implements DgUserRepository {
 	private final DgUserJpaRepository dgUserJpaRepository;
-
-	DgUserAdapter(DgUserJpaRepository dgUserJpaRepository) {
-		this.dgUserJpaRepository = dgUserJpaRepository;
-	}
 
 	@Override
 	public DgUser save(final DgUser user) {
@@ -26,7 +24,7 @@ class DgUserAdapter implements DgUserRepository {
 	}
 
 	@Override
-	public Optional<DgUser> findById(Long id) {
+	public Optional<DgUser> findById(final Long id) {
 		return dgUserJpaRepository.findById(id);
 	}
 }

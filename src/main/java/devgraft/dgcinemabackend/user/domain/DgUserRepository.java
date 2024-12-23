@@ -5,7 +5,7 @@ import java.util.Optional;
 public interface DgUserRepository {
 	DgUser save(final DgUser user);
 
-	Optional<DgUser> findByAccount(String account);
+	Optional<DgUser> findByAccount(final String account);
 
-	Optional<DgUser> findById(Long id);
+	Optional<DgUser> findById(final Long id);
 }

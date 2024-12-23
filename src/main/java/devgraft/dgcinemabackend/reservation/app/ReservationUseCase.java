@@ -1,8 +1,8 @@
 package devgraft.dgcinemabackend.reservation.app;
 
-import devgraft.dgcinemabackend.reservation.domain.Reservation;
 import devgraft.dgcinemabackend.reservation.domain.ReservationContext;
+import devgraft.dgcinemabackend.reservation.domain.ReservationResult;
 
 public interface ReservationUseCase {
-	Reservation register(final ReservationContext context);
+	ReservationResult register(final ReservationContext context);
 }

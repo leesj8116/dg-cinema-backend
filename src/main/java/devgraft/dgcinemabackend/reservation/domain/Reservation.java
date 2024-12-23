@@ -37,5 +37,5 @@ public class Reservation extends BaseEntity {
 
 	// @TODO: 좌석 번호 체계 구성
 	@Column(nullable = false, length = 10)
-	private String seetNo;                  // 좌석번호
+	private String seatNo;                  // 좌석번호
 }

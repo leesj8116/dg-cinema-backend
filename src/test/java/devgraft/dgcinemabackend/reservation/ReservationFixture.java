@@ -7,7 +7,8 @@ import devgraft.dgcinemabackend.user.domain.DgUser;
 public class ReservationFixture {
 	public static DgUser.DgUserBuilder anDgUser() {
 		return DgUser.builder()
-			.userId(1L);
+			.userId(1L)
+			.nickname("홍길동");
 	}
 
 	public static RunningTime.RunningTimeBuilder anRunningTime() {
@@ -20,7 +21,7 @@ public class ReservationFixture {
 			.reservationId(1L)
 			.user(anDgUser().build())
 			.runningTime(anRunningTime().build())
-			.seetNo("A1");
+			.seatNo("A1");
 	}
 
 }
