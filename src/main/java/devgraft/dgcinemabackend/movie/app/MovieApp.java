@@ -17,9 +17,11 @@ public class MovieApp {
 	}
 
 	public void register(MovieContext context) {
-		Movie movie = new Movie(context.title(), context.director(), context.releaseDate());
-
-		movieRepository.save(movie);
+		movieRepository.save(Movie.builder()
+			.title(context.title())
+			.director(context.director())
+			.releaseDate(context.releaseDate())
+			.build());
 	}
 
 	public List<Movie> getMovies() {

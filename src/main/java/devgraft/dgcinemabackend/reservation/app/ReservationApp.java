@@ -48,7 +48,8 @@ public class ReservationApp implements ReservationUseCase {
 
 		// 2. 상영 시간 검사
 		final RunningTime runningTime = runningTimeFinder.findById(context.runningTimeId())
-			.orElseThrow(() -> new IllegalArgumentException(ReservationExceptionMessage.RUNNING_TIME_NOT_FOUND.getMessage()));
+			.orElseThrow(
+				() -> new IllegalArgumentException(ReservationExceptionMessage.RUNNING_TIME_NOT_FOUND.getMessage()));
 
 		// 3. 좌석 검사
 		getReservations(runningTime.getRunningTimeId())
@@ -57,7 +58,8 @@ public class ReservationApp implements ReservationUseCase {
 			.filter(seatNo -> seatNo.equals(context.seatNo()))
 			.findAny()
 			.ifPresent(dummy -> {
-				throw new IllegalArgumentException(ReservationExceptionMessage.ALREADY_SEAT_NO_HAS_RESERVED.getMessage());
+				throw new IllegalArgumentException(
+					ReservationExceptionMessage.ALREADY_SEAT_NO_HAS_RESERVED.getMessage());
 			});
 
 		// 4. 예약 처리
@@ -68,11 +70,11 @@ public class ReservationApp implements ReservationUseCase {
 			.build());
 
 		// 5. 극장 조회 (검증 X, 결과 반환 위해 사용)
-		Cinema cinema = cinemaFinder.findById(runningTime.getScreenRoom().getCinemaId()).orElseThrow(
+		final Cinema cinema = cinemaFinder.findById(runningTime.getScreenRoom().getCinemaId()).orElseThrow(
 			() -> new IllegalArgumentException(ReservationExceptionMessage.CINEMA_NOT_FOUND.getMessage()));
 
 		return new ReservationResult(
-			result.getReservationId(),user.getNickname(), runningTime.getStartTime(),
+			result.getReservationId(), user.getNickname(), runningTime.getStartTime(),
 			runningTime.getMovie().getTitle(), cinema.getName(), runningTime.getScreenRoom().getScreenNumber(),
 			result.getSeatNo());
 	}

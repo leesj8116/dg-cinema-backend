@@ -2,6 +2,7 @@ package devgraft.dgcinemabackend.reservation.api;
 
 import static devgraft.dgcinemabackend.reservation.ReservationFixture.*;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 import org.assertj.core.api.Assertions;
@@ -16,11 +17,13 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import devgraft.dgcinemabackend.reservation.app.ReservationApp;
+import devgraft.dgcinemabackend.reservation.domain.CinemaFinder;
 import devgraft.dgcinemabackend.reservation.domain.DgUserFinder;
 import devgraft.dgcinemabackend.reservation.domain.Reservation;
 import devgraft.dgcinemabackend.reservation.domain.ReservationContext;
 import devgraft.dgcinemabackend.reservation.domain.ReservationExceptionMessage;
 import devgraft.dgcinemabackend.reservation.domain.ReservationRepository;
+import devgraft.dgcinemabackend.reservation.domain.ReservationResult;
 import devgraft.dgcinemabackend.reservation.domain.RunningTimeFinder;
 
 @ExtendWith(MockitoExtension.class)
@@ -33,6 +36,9 @@ class ReservationApiTest {
 
 	@Mock
 	private RunningTimeFinder runningTimeFinder;
+
+	@Mock
+	private CinemaFinder cinemaFinder;
 
 	@Mock
 	private ReservationRepository reservationRepository;
@@ -74,7 +80,8 @@ class ReservationApiTest {
 
 		// then
 		Assertions.assertThat(exception).isNotNull();
-		Assertions.assertThat(exception.getMessage()).isEqualTo(ReservationExceptionMessage.USER_NOT_FOUND.getMessage());
+		Assertions.assertThat(exception.getMessage())
+			.isEqualTo(ReservationExceptionMessage.USER_NOT_FOUND.getMessage());
 		Assertions.assertThat(userIdCaptor.getValue()).isEqualTo(givenContext.userId());
 	}
 
@@ -83,7 +90,8 @@ class ReservationApiTest {
 	void register_should_throw_exception_when_runningtime_not_found() {
 		// given
 		final Long dummyReservationId = 999L;
-		Reservation reservation = anReservation().runningTime(anRunningTime().runningTimeId(dummyReservationId).build()).build();
+		Reservation reservation = anReservation().runningTime(anRunningTime().runningTimeId(dummyReservationId).build())
+			.build();
 		final ReservationContext reservationContext = new ReservationContext(
 			reservation.getReservationId(),
 			reservation.getRunningTime().getRunningTimeId(),
@@ -100,7 +108,8 @@ class ReservationApiTest {
 
 		// then
 		Assertions.assertThat(exception).isNotNull();
-		Assertions.assertThat(exception.getMessage()).isEqualTo(ReservationExceptionMessage.RUNNING_TIME_NOT_FOUND.getMessage());
+		Assertions.assertThat(exception.getMessage())
+			.isEqualTo(ReservationExceptionMessage.RUNNING_TIME_NOT_FOUND.getMessage());
 		Assertions.assertThat(runningTimeCaptor.getValue()).isEqualTo(dummyReservationId);
 	}
 
@@ -108,27 +117,38 @@ class ReservationApiTest {
 	@DisplayName("예약을 정상적으로 등록해야 한다.")
 	void register_should_save_reservation() {
 		// given
-		Reservation reservation = anReservation().runningTime(anRunningTime().build()).build();
+		Reservation reservation = anReservation().build();
 
 		final ReservationContext reservationContext = new ReservationContext(
-			reservation.getReservationId(),
+			reservation.getUser().getUserId(),
 			reservation.getRunningTime().getRunningTimeId(),
 			reservation.getSeatNo());
 
 		final ArgumentCaptor<Long> runningTimeCaptor = ArgumentCaptor.forClass(Long.class);
+		final ArgumentCaptor<Long> userCaptor = ArgumentCaptor.forClass(Long.class);
 		final ArgumentCaptor<Reservation> reservationCaptor = ArgumentCaptor.forClass(Reservation.class);
 
-		Mockito.when(dgUserFinder.findById(Mockito.anyLong())).thenReturn(Optional.of(anDgUser().build()));
-		// Mockito.when(runningTimeFinder.findById(Mockito.anyLong())).thenReturn(Optional.of(anRunningTime().build()));
+		Mockito.when(dgUserFinder.findById(Mockito.anyLong())).thenReturn(Optional.of(reservation.getUser()));
+		Mockito.when(cinemaFinder.findById(Mockito.anyLong())).thenReturn(Optional.of(anCinema().build()));
+		Mockito.when(runningTimeFinder.findById(Mockito.anyLong())).thenReturn(Optional.of(anRunningTime().build()));
+		Mockito.when(reservationRepository.findAllByRunningTime(Mockito.anyLong())).thenReturn(new ArrayList<>());
+		Mockito.when(reservationRepository.save(Mockito.any())).thenReturn(reservation);
 
 		// when
+		ReservationResult result = reservationApp.register(reservationContext);
+		Mockito.verify(dgUserFinder, Mockito.times(1)).findById(userCaptor.capture());
 		Mockito.verify(runningTimeFinder, Mockito.times(1)).findById(runningTimeCaptor.capture());
-		reservationApp.register(reservationContext);
-
-		// then
 		Mockito.verify(reservationRepository, Mockito.times(1)).save(reservationCaptor.capture());
 
-		Assertions.assertThat(reservationCaptor.getValue()).isNotNull();
-		Assertions.assertThat(runningTimeCaptor.getValue()).isEqualTo(reservation.getReservationId());
+		// @TODO: [재검토] 정상 동작 API 테스트는 어디까지가 좋은가?
+		// then
+		Assertions.assertThat(result.reservationId())
+			.isEqualTo(reservation.getReservationId());                     // 아이디
+		Assertions.assertThat(userCaptor.getValue())
+			.isEqualTo(reservation.getUser().getUserId());                  // 유저
+		Assertions.assertThat(runningTimeCaptor.getValue())
+			.isEqualTo(reservation.getRunningTime().getRunningTimeId());    // 상영시간
+		Assertions.assertThat(reservationCaptor.getValue().getSeatNo())
+			.isEqualTo(reservation.getSeatNo());                            // 좌석
 	}
 }
