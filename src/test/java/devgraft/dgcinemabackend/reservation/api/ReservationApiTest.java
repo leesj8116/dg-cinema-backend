@@ -64,8 +64,7 @@ class ReservationApiTest {
 		Mockito.when(runningTimeFinder.findById(runningTimeId)).thenReturn(Optional.empty());
 		// when
 		final IllegalArgumentException exception = Assertions.catchThrowableOfType(
-			() -> reservationApp.seatCheck(runningTimeId),
-			IllegalArgumentException.class);
+			IllegalArgumentException.class, () -> reservationApp.seatCheck(runningTimeId));
 
 		// then
 		ArgumentCaptor<Long> runningTimeCaptor = ArgumentCaptor.forClass(Long.class);
@@ -94,8 +93,7 @@ class ReservationApiTest {
 
 		// when
 		final IllegalArgumentException exception = Assertions.catchThrowableOfType(
-			() -> reservationApp.register(givenContext),
-			IllegalArgumentException.class);
+			IllegalArgumentException.class, () -> reservationApp.register(givenContext));
 
 		ArgumentCaptor<Long> userIdCaptor = ArgumentCaptor.forClass(Long.class);
 		// verify(dgUserRepository, Mockito.times(1)) : findById를 몇 번 콜했는지 체크 하는 횟수.
@@ -111,7 +109,7 @@ class ReservationApiTest {
 
 	@Test
 	@DisplayName("예약 등록시 상영 시간 정보가 존재해야 한다.")
-	void register_should_throw_exception_when_runningtime_not_found() {
+	void register_should_throw_exception_when_running_time_not_found() {
 		// given
 		final Long dummyReservationId = 999L;
 		Reservation reservation = anReservation().runningTime(anRunningTime().runningTimeId(dummyReservationId).build())
@@ -123,8 +121,7 @@ class ReservationApiTest {
 
 		// when
 		final IllegalArgumentException exception = Assertions.catchThrowableOfType(
-			() -> reservationApp.register(reservationContext),
-			IllegalArgumentException.class);
+			IllegalArgumentException.class, () -> reservationApp.register(reservationContext));
 
 		ArgumentCaptor<Long> runningTimeCaptor = ArgumentCaptor.forClass(Long.class);
 		// 꼭 위의 방법대로 할 필요 없이, @Captor 어노테이션으로 할 수 있음
