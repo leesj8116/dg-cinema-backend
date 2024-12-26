@@ -29,7 +29,8 @@ public class ReservationApp implements ReservationUseCase {
 
 	public List<String> seatCheck(final Long runningTimeId) {
 		log.info("예약된 좌석 조회");
-		return reservationRepository.findSeatNoByRunningTime(runningTimeId);
+		final RunningTime runningTime = getRunningTime(runningTimeId);
+		return reservationRepository.findSeatNoByRunningTime(runningTime);
 	}
 
 	public ReservationResult register(final ReservationContext context) {
@@ -43,9 +44,7 @@ public class ReservationApp implements ReservationUseCase {
 			.orElseThrow(() -> new IllegalArgumentException(ReservationExceptionMessage.USER_NOT_FOUND.getMessage()));
 
 		// 2. 상영 시간 검사
-		final RunningTime runningTime = runningTimeFinder.findById(context.runningTimeId())
-			.orElseThrow(
-				() -> new IllegalArgumentException(ReservationExceptionMessage.RUNNING_TIME_NOT_FOUND.getMessage()));
+		final RunningTime runningTime = getRunningTime(context.runningTimeId());
 
 		// 3. 좌석 검사
 		reservationRepository.findSeatNoByRunningTime(runningTime)
@@ -72,5 +71,11 @@ public class ReservationApp implements ReservationUseCase {
 			result.getReservationId(), user.getNickname(), runningTime.getStartTime(),
 			runningTime.getMovie().getTitle(), cinema.getName(), runningTime.getScreenRoom().getScreenNumber(),
 			result.getSeatNo());
+	}
+
+	protected RunningTime getRunningTime(final Long runningTimeId) {
+		return runningTimeFinder.findById(runningTimeId).orElseThrow(
+			() -> new IllegalArgumentException(ReservationExceptionMessage.RUNNING_TIME_NOT_FOUND.getMessage())
+		);
 	}
 }

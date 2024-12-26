@@ -54,26 +54,26 @@ class ReservationApiTest {
 	}
 
 	//////////////////////// 예약 좌석 조회 ////////////////////////
-
-	// @FIXME: 잘못된 테스트코드
+	
 	@Test
 	@DisplayName("예약 좌석 조회시 상영 시간은 존재해야 한다")
 	void seat_check_should_throw_exception_when_running_time_not_found() {
 		// given
 		Long runningTimeId = 9999L;
-		Mockito.when(runningTimeFinder.findById(runningTimeId)).thenReturn(Optional.empty());
+		Mockito.when(runningTimeFinder.findById(Mockito.anyLong())).thenReturn(Optional.empty());
+
 		// when
 		final IllegalArgumentException exception = Assertions.catchThrowableOfType(
 			IllegalArgumentException.class, () -> reservationApp.seatCheck(runningTimeId));
 
 		// then
-		ArgumentCaptor<Long> runningTimeCaptor = ArgumentCaptor.forClass(Long.class);
-		Mockito.verify(runningTimeFinder, Mockito.times(2)).findById(runningTimeCaptor.capture());
+		ArgumentCaptor<Long> runningTimeIdCaptor = ArgumentCaptor.forClass(Long.class);
+		Mockito.verify(runningTimeFinder, Mockito.times(1)).findById(runningTimeIdCaptor.capture());
 
 		Assertions.assertThat(exception).isNotNull();
 		Assertions.assertThat(exception.getMessage())
 			.isEqualTo(ReservationExceptionMessage.RUNNING_TIME_NOT_FOUND.getMessage());
-		Assertions.assertThat(runningTimeCaptor.getValue()).isEqualTo(runningTimeId);
+		Assertions.assertThat(runningTimeIdCaptor.getValue()).isEqualTo(runningTimeId);
 	}
 
 	//////////////////////// 예약 검사 ////////////////////////
