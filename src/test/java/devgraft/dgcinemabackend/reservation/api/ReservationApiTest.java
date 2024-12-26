@@ -53,7 +53,32 @@ class ReservationApiTest {
 			.thenReturn(Optional.of(anDgUser().build()));
 	}
 
-	// 유저가 존재하는지 검사, 만약 없을 경우 예외 처리
+	//////////////////////// 예약 좌석 조회 ////////////////////////
+
+	// @FIXME: 잘못된 테스트코드
+	@Test
+	@DisplayName("예약 좌석 조회시 상영 시간은 존재해야 한다")
+	void seat_check_should_throw_exception_when_running_time_not_found() {
+		// given
+		Long runningTimeId = 9999L;
+		Mockito.when(runningTimeFinder.findById(runningTimeId)).thenReturn(Optional.empty());
+		// when
+		final IllegalArgumentException exception = Assertions.catchThrowableOfType(
+			() -> reservationApp.seatCheck(runningTimeId),
+			IllegalArgumentException.class);
+
+		// then
+		ArgumentCaptor<Long> runningTimeCaptor = ArgumentCaptor.forClass(Long.class);
+		Mockito.verify(runningTimeFinder, Mockito.times(2)).findById(runningTimeCaptor.capture());
+
+		Assertions.assertThat(exception).isNotNull();
+		Assertions.assertThat(exception.getMessage())
+			.isEqualTo(ReservationExceptionMessage.RUNNING_TIME_NOT_FOUND.getMessage());
+		Assertions.assertThat(runningTimeCaptor.getValue()).isEqualTo(runningTimeId);
+	}
+
+	//////////////////////// 예약 검사 ////////////////////////
+
 	@Test
 	@DisplayName("예약 등록시 유저는 존재해야 한다")
 	void register_should_throw_exception_when_user_not_found() {

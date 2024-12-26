@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
-import devgraft.dgcinemabackend.reservation.domain.DgUserFinder;
 import devgraft.dgcinemabackend.reservation.domain.Reservation;
 import devgraft.dgcinemabackend.reservation.domain.ReservationExceptionMessage;
 import devgraft.dgcinemabackend.reservation.domain.ReservationRepository;
@@ -18,11 +17,10 @@ import lombok.RequiredArgsConstructor;
 class ReservationAdapter implements ReservationRepository {
 	private final ReservationJpaRepository reservationJpaRepository;
 	private final RunningTimeFinder runningTimeFinder;
-	private final DgUserFinder dgUserFinder;
 
 	@Override
 	public List<String> findSeatNoByRunningTime(final Long runningTimeId) {
-		RunningTime runningTime = findById(runningTimeId);
+		RunningTime runningTime = findRunningTimeById(runningTimeId);
 		return findSeatNoByRunningTime(runningTime);
 	}
 
@@ -39,7 +37,7 @@ class ReservationAdapter implements ReservationRepository {
 		return reservationJpaRepository.save(reservation);
 	}
 
-	private RunningTime findById(final Long runningTimeId) {
+	private RunningTime findRunningTimeById(final Long runningTimeId) {
 		return runningTimeFinder.findById(runningTimeId)
 			.orElseThrow(
 				() -> new IllegalArgumentException(ReservationExceptionMessage.RUNNING_TIME_NOT_FOUND.getMessage())
