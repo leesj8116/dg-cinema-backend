@@ -37,7 +37,6 @@ public class ReservationApp implements ReservationUseCase {
 	}
 
 	public ReservationResult register(final ReservationContext context) {
-		// Long userId, Long runningTimeId, String settNo
 		// user가 존재하는지 검사
 		// runningTimeId가 존재하는지 검사
 		// seetNo가 이미 예약되어잇는지 검사

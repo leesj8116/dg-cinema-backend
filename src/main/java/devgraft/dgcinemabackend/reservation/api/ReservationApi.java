@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import devgraft.dgcinemabackend.reservation.app.ReservationApp;
-import devgraft.dgcinemabackend.reservation.domain.Reservation;
 import devgraft.dgcinemabackend.reservation.domain.ReservationContext;
+import devgraft.dgcinemabackend.reservation.domain.ReservationResult;
 import devgraft.dgcinemabackend.user.domain.DgUserRepository;
 
 @RestController
@@ -30,11 +30,12 @@ public class ReservationApi {
 		return reservationApp.seatCheck(runningTimeId);
 	}
 
-	public Reservation register(ReservationContext context) {
-		// return reservationApp.register(context);
-		dgUserRepository.findById(context.userId())
-			.orElseThrow(() -> new IllegalArgumentException("User does not exist"));
-
-		return null;
+	/**
+	 * 예약을 진행한다
+	 * @param context 예약에 필요한 정보 (누가, 어느 상영 시간을, 어떤 자리에)
+	 * @return
+	 */
+	public ReservationResult register(ReservationContext context) {
+		return reservationApp.register(context);
 	}
 }
