@@ -2,7 +2,6 @@ package devgraft.dgcinemabackend.reservation.api;
 
 import static devgraft.dgcinemabackend.reservation.ReservationFixture.*;
 
-import java.util.ArrayList;
 import java.util.Optional;
 
 import org.assertj.core.api.Assertions;
@@ -131,7 +130,6 @@ class ReservationApiTest {
 		Mockito.when(dgUserFinder.findById(Mockito.anyLong())).thenReturn(Optional.of(reservation.getUser()));
 		Mockito.when(cinemaFinder.findById(Mockito.anyLong())).thenReturn(Optional.of(anCinema().build()));
 		Mockito.when(runningTimeFinder.findById(Mockito.anyLong())).thenReturn(Optional.of(anRunningTime().build()));
-		Mockito.when(reservationRepository.findAllByRunningTime(Mockito.anyLong())).thenReturn(new ArrayList<>());
 		Mockito.when(reservationRepository.save(Mockito.any())).thenReturn(reservation);
 
 		// when

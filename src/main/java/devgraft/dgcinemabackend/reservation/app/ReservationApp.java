@@ -1,7 +1,6 @@
 package devgraft.dgcinemabackend.reservation.app;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -29,14 +28,12 @@ public class ReservationApp implements ReservationUseCase {
 	private final CinemaFinder cinemaFinder;
 
 	public List<String> seatCheck(final Long runningTimeId) {
-		// @TODO: 예약 현황을 확인하려면 RunningTime domain에 접근해야함.. 이럴 때는 어떻게 둘을 분리할 수 있을까?
-		return getReservations(runningTimeId)
-			.stream()
-			.map(reservation -> reservation.getSeatNo())
-			.collect(Collectors.toList());
+		log.info("예약된 좌석 조회");
+		return reservationRepository.findSeatNoByRunningTime(runningTimeId);
 	}
 
 	public ReservationResult register(final ReservationContext context) {
+		log.info("예약 진행");
 		// user가 존재하는지 검사
 		// runningTimeId가 존재하는지 검사
 		// seetNo가 이미 예약되어잇는지 검사
@@ -51,9 +48,8 @@ public class ReservationApp implements ReservationUseCase {
 				() -> new IllegalArgumentException(ReservationExceptionMessage.RUNNING_TIME_NOT_FOUND.getMessage()));
 
 		// 3. 좌석 검사
-		getReservations(runningTime.getRunningTimeId())
+		reservationRepository.findSeatNoByRunningTime(runningTime)
 			.stream()
-			.map(reservation -> reservation.getSeatNo())
 			.filter(seatNo -> seatNo.equals(context.seatNo()))
 			.findAny()
 			.ifPresent(dummy -> {
@@ -76,14 +72,5 @@ public class ReservationApp implements ReservationUseCase {
 			result.getReservationId(), user.getNickname(), runningTime.getStartTime(),
 			runningTime.getMovie().getTitle(), cinema.getName(), runningTime.getScreenRoom().getScreenNumber(),
 			result.getSeatNo());
-	}
-
-	/**
-	 * 상영시간 내 예약을 모두 조회한다.
-	 * @param runningTimeId
-	 * @return
-	 */
-	private List<Reservation> getReservations(final Long runningTimeId) {
-		return reservationRepository.findAllByRunningTime(runningTimeId);
 	}
 }
