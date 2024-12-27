@@ -1,5 +1,6 @@
 package devgraft.dgcinemabackend.cinema.infra;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Component;
@@ -21,5 +22,10 @@ class CinemaAdapter implements CinemaRepository {
 	@Override
 	public Optional<Cinema> findById(Long id) {
 		return cinemaJpaRepository.findById(id);
+	}
+
+	@Override
+	public List<Cinema> findAll() {
+		return cinemaJpaRepository.findAll();
 	}
 }

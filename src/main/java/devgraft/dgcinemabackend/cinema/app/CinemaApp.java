@@ -1,5 +1,7 @@
 package devgraft.dgcinemabackend.cinema.app;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import devgraft.dgcinemabackend.cinema.domain.Cinema;
@@ -13,12 +15,19 @@ public class CinemaApp implements CinemaUseCase {
 
 	@Override
 	public CinemaResult createCinema(CreateCinemaRequest createCinemaRequest) {
-
-		Cinema cinemaEntity = cinemaRepository.register(Cinema.builder()
+		Cinema cinema = cinemaRepository.register(Cinema.builder()
 			.name(createCinemaRequest.name())
 			.location(createCinemaRequest.location())
 			.build());
 
-		return new CinemaResult(cinemaEntity.getName(), cinemaEntity.getLocation());
+		return new CinemaResult(cinema.getCinemaId(), cinema.getName(), cinema.getLocation());
+	}
+
+	@Override
+	public List<CinemaResult> findAllCinema() {
+		return cinemaRepository.findAll()
+			.stream()
+			.map(item -> new CinemaResult(item.getCinemaId(), item.getName(), item.getLocation()))
+			.toList();
 	}
 }
