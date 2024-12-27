@@ -94,6 +94,28 @@
             </tbody>
         </table>
     </div>
+    <div id="reservation-task">
+        <h3>선택 내용 </h3>
+        <p>
+            <span>영화 제목 : </span>
+            <span id="reservation-task-what"></span>
+        </p>
+        <p>
+            <span>상영 시간 : </span>
+            <span id="reservation-task-when"></span>
+        </p>
+        <p>
+            <span>극장 / 상영관 : </span>
+            <span id="reservation-task-where"></span>
+        </p>
+        <p>
+            <span>선택 좌석</span>
+            <input id="seat-no" type="text" pattern="^[A-H][0-9]{1,2}$" disabled />
+        </p>
+        <p>
+            <button id="regist-reservation-btn" type="button" onclick="searchRunningTimeByMovietitle()">예약</button>
+        </p>
+    </div>
 </main>
 </body>
 </html>

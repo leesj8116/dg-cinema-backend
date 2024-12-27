@@ -61,15 +61,36 @@ table tr > td:last-child > span.past {
     max-height: 20vh;
     overflow-y: scroll;
 }
+#reservation-seat-info {
+    table-layout: fixed;
+}
 
 #reservation-seat-info thead td {
     font-size: 2em;
 }
 
 #reservation-seat-info-body td {
-    width: auto
+    width: auto;
+    cursor: pointer;
+}
+
+#reservation-seat-info-body td:hover {
+    border: 1px solid #ff3333;
+    background-color: #ff9999;
+}
+
+#reservation-seat-info-body td.selected {
+    border: 1px solid #ff0000;
+    background-color: #ff6666;
+    font-weight: bold;
 }
 
 #reservation-seat-info-body td.already {
-    background-color: #999999;
+    background-color: #999;
+    color: #666;
+    cursor: default;
+}
+
+#reservation-seat-info-body td.already:hover {
+    border: 1px solid #000;
 }
