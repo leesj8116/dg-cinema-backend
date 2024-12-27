@@ -1,10 +1,7 @@
-// 공통
-
 // @TODO: 좌석 체계 점검
 // 더 좋은 방법이 있을텐데......
 const seatsRow = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
 const seatsCol = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'];
-
 
 document.addEventListener('DOMContentLoaded', async () => {
     if (localStorage.getItem('account') === null) {
@@ -34,14 +31,22 @@ const getMovies = async () => {
 };
 
 const getCinemas = async () => {
-  await fetch('/cinema')
-      .then((response) => response.json())
-      .then((json) => {
-        console.log('극장 정보', json);
-      }).catch((error) => {
-         console.error(error);
-         alert('극장 목록을 조회할 수 없습니다. 잠시 후 다시 시도해주세요.');
-      });
+    await fetch('/cinema')
+        .then((response) => response.json())
+        .then((json) => {
+            console.log('극장 정보', json);
+
+            // 극장 정보는 재조합하여 localStorage에 저장, 사용
+            const cinemas = {};
+            for (let i = 0; i < json.length; i++) {
+                cinemas[json[i].cinemaId] = {'name': json[i].name, 'location': json[i].location};
+            }
+            localStorage.setItem('cinemas', JSON.stringify(cinemas));
+
+        }).catch((error) => {
+            console.error(error);
+            alert('극장 목록을 조회할 수 없습니다. 잠시 후 다시 시도해주세요.');
+        });
 };
 
 /**
@@ -121,6 +126,9 @@ const uploadRunningTimetable = (runningTimes) => {
     const existingRows = tableBody.querySelectorAll('tr.running-time');
     existingRows.forEach(row => row.remove());
 
+    // 극장 정보 조회
+    const cinemas = JSON.parse(localStorage.getItem('cinemas'));
+
     // 새로운 상영시간 데이터 추가
     runningTimes.forEach(runningTime => {
         //// 상영 시간 계산
@@ -157,7 +165,9 @@ const uploadRunningTimetable = (runningTimes) => {
 
         // 극장
         const cinemaCell = document.createElement('td');
-        cinemaCell.textContent = runningTime.screenRoom.cinemaId;
+        // 극장 id => 이름으로 변경하여 표시
+        cinemaCell.textContent = cinemas[runningTime.screenRoom.cinemaId].name;
+
 
         // 상영관
         const screenRoomCell = document.createElement('td');
@@ -207,9 +217,13 @@ const uploadRunningTimetable = (runningTimes) => {
  * @returns {Promise<void>}
  */
 const reservationCheckSeat = async (runningTimeId, title, startTime, cinema, screenNumber) => {
+    // 극장 정보 조회
+    const cinemas = JSON.parse(localStorage.getItem('cinemas'));
+
     document.getElementById('reservation-task-what').innerText = title;
     document.getElementById('reservation-task-when').innerText = startTime;
-    document.getElementById('reservation-task-where').innerText = `${cinema} / ${screenNumber}관`;
+    document.getElementById('reservation-task-where-cinema').innerText = `${cinemas[cinema].name} (${cinemas[cinema].location})`;
+    document.getElementById('reservation-task-where-screen').innerText = `${screenNumber}관`;
 
     const queryString = new URLSearchParams({'runningTime': runningTimeId}).toString();
     // 좌석 현황 조회 후 화면에 업로드
