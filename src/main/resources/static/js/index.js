@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     await getMovies();
+    await getCinemas();
     await searchRunningTimeByMovietitle();
 })
 
@@ -28,7 +29,19 @@ const getMovies = async () => {
             updateMovieTable(json);
         }).catch((error) => {
             console.error(error);
+            alert('영화 목록을 조회할 수 없습니다. 잠시 후 다시 시도해주세요.');
         });
+};
+
+const getCinemas = async () => {
+  await fetch('/cinema')
+      .then((response) => response.json())
+      .then((json) => {
+        console.log('극장 정보', json);
+      }).catch((error) => {
+         console.error(error);
+         alert('극장 목록을 조회할 수 없습니다. 잠시 후 다시 시도해주세요.');
+      });
 };
 
 /**
@@ -47,6 +60,7 @@ const searchRunningTimeByMovietitle = async () => {
             uploadRunningTimetable(json);
         }).catch((error) => {
             console.error(error);
+            alert('상영시간 정보를 조회할 수 없습니다. 잠시 후 다시 시도해주세요.');
         });
 };
 
