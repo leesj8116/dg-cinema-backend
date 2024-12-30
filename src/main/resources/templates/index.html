@@ -12,9 +12,9 @@
 <header>
     <form id="login-area">
         <p>
-            <span>계정 : </span>
+            <label for="account-field">계정 : </label>
             <input id="account-field" type="email" required/>
-            <span>비밀번호 : </span>
+            <label for="password-field">비밀번호 : </label>
             <input id="password-field" type="password" required/>
         </p>
         <p>
@@ -57,26 +57,26 @@
     <div>
         <div id="running-time-seacrh-by-movie">
             <p>
-                <span>영화 제목</span>
+                <label for="search-movie-title">영화 제목 : </label>
                 <input id="search-movie-title" type="text"/>
-                <button id="search-movie-title-btn" type="button" onclick="searchRunningTimeByMovietitle()">검색</button>
+                <button id="search-movie-title-btn" type="button" onclick="searchRunningTimeByMovieTitle()">검색</button>
             </p>
         </div>
         <div id="running-time-list-by-movie">
             <table>
                 <caption>검색 결과</caption>
                 <thead>
-                    <tr>
-                        <th>제목</th>
-                        <th>극장</th>
-                        <th>상영관</th>
-                        <th>상영일</th>
-                        <th>상영시간</th>
-                        <th>비고</th>
-                    </tr>
+                <tr>
+                    <th>제목</th>
+                    <th>극장</th>
+                    <th>상영관</th>
+                    <th>상영일</th>
+                    <th>상영시간</th>
+                    <th>비고</th>
+                </tr>
                 </thead>
                 <tbody id="running-time-body">
-                    <tr class="running-time"></tr>
+                <tr class="running-time"></tr>
                 </tbody>
             </table>
         </div>
@@ -96,6 +96,7 @@
     </div>
     <div id="reservation-task">
         <h3>선택 내용 </h3>
+        <input id="reservation-running-time-id" type="hidden" hidden="hidden"/>
         <p>
             <span>영화 제목 : </span>
             <span id="reservation-task-what"></span>
@@ -113,11 +114,11 @@
             <span id="reservation-task-where-screen"></span>
         </p>
         <p>
-            <span>선택 좌석</span>
-            <input id="seat-no" type="text" pattern="^[A-H][0-9]{1,2}$" disabled />
+            <label for="seat-no">선택 좌석 : </label>
+            <input id="seat-no" type="text" pattern="^[A-H][0-9]{1,2}$" disabled/>
         </p>
         <p>
-            <button id="regist-reservation-btn" type="button" onclick="searchRunningTimeByMovietitle()">예약</button>
+            <button id="regist-reservation-btn" type="button" onclick="make_reservation()">예약</button>
         </p>
     </div>
 </main>

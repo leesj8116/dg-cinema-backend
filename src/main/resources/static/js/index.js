@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     await getMovies();
     await getCinemas();
-    await searchRunningTimeByMovietitle();
+    await searchRunningTimeByMovieTitle();
 })
 
 /**
@@ -30,6 +30,9 @@ const getMovies = async () => {
         });
 };
 
+/**
+ * 극장 목록을 조회하여 localStorage에 저장한다
+ */
 const getCinemas = async () => {
     await fetch('/cinema')
         .then((response) => response.json())
@@ -54,7 +57,7 @@ const getCinemas = async () => {
  * @param title
  * @returns {Promise<void>}
  */
-const searchRunningTimeByMovietitle = async () => {
+const searchRunningTimeByMovieTitle = async () => {
     const title = document.getElementById('search-movie-title').value;
     const queryString = new URLSearchParams({'title': title}).toString();
 
@@ -213,7 +216,7 @@ const uploadRunningTimetable = (runningTimes) => {
 }
 
 /**
- * 선택한 상영 시간의 잔여 좌석을 확인한다.
+ * '예매하기' 클릭시, 선택한 상영 시간의 잔여 좌석을 확인한다.
  * @returns {Promise<void>}
  */
 const reservationCheckSeat = async (runningTimeId, title, startTime, cinema, screenNumber) => {
@@ -224,6 +227,7 @@ const reservationCheckSeat = async (runningTimeId, title, startTime, cinema, scr
     document.getElementById('reservation-task-when').innerText = startTime;
     document.getElementById('reservation-task-where-cinema').innerText = `${cinemas[cinema].name} (${cinemas[cinema].location})`;
     document.getElementById('reservation-task-where-screen').innerText = `${screenNumber}관`;
+    document.getElementById('reservation-running-time-id').value = runningTimeId;
 
     const queryString = new URLSearchParams({'runningTime': runningTimeId}).toString();
     // 좌석 현황 조회 후 화면에 업로드
@@ -266,18 +270,23 @@ const loginEvent = async () => {
 
     switch (accountValue) {
         case 'admin':
+            localStorage.setItem('userId', '1');
             localStorage.setItem('nickname', '운영자');
             break;
         case 'user':
+            localStorage.setItem('userId', '2');
             localStorage.setItem('nickname', '사용자');
             break;
         case 'Pcloud63514@gmail.com':
+            localStorage.setItem('userId', '3');
             localStorage.setItem('nickname', '권태헌');
             break;
         case 'leesj8115@gmail.com':
+            localStorage.setItem('userId', '4');
             localStorage.setItem('nickname', '이승주');
             break;
         default:
+            localStorage.setItem('userId', '5');
             localStorage.setItem('nickname', '몰?루는 유저');
     }
     showLoginInfoArea();
@@ -346,10 +355,10 @@ const updateReservationSeat = (seats) => {
             td.id = seatNo;
             td.innerText = seatNo;
 
-            td.setAttribute('onclick', `selectMySeat('${seatNo}')`);
-
             if (seats.indexOf(seatNo) !== -1) {
                 td.classList.add('already'); // 예약된 자리는 다르게 표시
+            } else {
+                td.setAttribute('onclick', `selectMySeat('${seatNo}')`);
             }
 
             row.appendChild(td);
@@ -375,3 +384,27 @@ const selectMySeat = (mySeat) => {
     document.getElementById(mySeat).classList.add('selected');
     document.getElementById('regist-reservation-btn').focus();  // 예약 버튼에 포커스
 };
+
+const make_reservation = async () => {
+    const userId = Number(localStorage.getItem('userId'));
+    const runningTimeId = Number(document.getElementById('reservation-running-time-id').value);
+    const seatNo = document.getElementById('seat-no').value;
+
+    await fetch(`/reservation`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json;charset=UTF-8'
+        },
+        body: JSON.stringify({
+            userId, runningTimeId, seatNo
+        })
+    })
+        .then((response) => response.json())
+        .then((json) => {
+            alert("예약에 성공했습니다.");
+            location.reload()
+        }).catch((error) => {
+            console.error(error);
+            alert('예약 등록에 실패했습니다. 잠시 후 다시 시도해주세요.');
+        })
+}
