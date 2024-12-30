@@ -4,16 +4,57 @@ const seatsRow = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
 const seatsCol = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'];
 
 document.addEventListener('DOMContentLoaded', async () => {
-    if (localStorage.getItem('account') === null) {
+    if (localStorage.getItem('userId') === null) {
         hideLoginInfoArea();
     } else {
         showLoginInfoArea();
     }
 
-    await getMovies();
     await getCinemas();
-    await searchRunningTimeByMovieTitle();
-})
+    await changePage(0);
+});
+
+/**
+ * 메인 화면에서 '예약 하기' 화면과 '예약 확인' 화면을 이동한다.
+ * @param pageNo
+ */
+const changePage = async (pageNo = 0) => {
+    const mainPage = document.getElementById('tab-main');
+    const reservationPage = document.getElementById('tab-my-reservation');
+
+    const selected = document.querySelector('.nav-list .selected');
+    if (selected !== null) {
+        selected.classList.remove('selected');
+        selected.onclick = '';
+    }
+
+    switch (pageNo) {
+        case 0:
+            // 메인 화면
+            mainPage.style.display = 'block';
+            reservationPage.style.display = 'none';
+
+            cleanReservationForm();
+            await getMovies();
+            await searchRunningTimeByMovieTitle();
+
+            document.getElementById('nav-main').classList.add('selected');
+            document.getElementById('nav-my-reservation').onclick = async () => await changePage(1);
+
+            break;
+        case 1:
+            // 예약 확인 화면
+            mainPage.style.display = 'none';
+            reservationPage.style.display = 'block';
+
+            document.getElementById('nav-main').onclick = async () => await changePage(0);
+            document.getElementById('nav-my-reservation').classList.add('selected');
+
+            await getMyReservation();
+
+            break;
+    }
+};
 
 /**
  * 영화 목록을 가져온다.
@@ -373,11 +414,10 @@ const updateReservationSeat = (seats) => {
  * @param mySeat
  */
 const selectMySeat = (mySeat) => {
-    const selectedList = document.getElementsByClassName('selected');
+    const selectedItem = document.querySelector('#reservation-seat-info-body .selected')
 
-    // 기존에 선택된 항목은 제거
-    for (let i = 0; i < selectedList.length; i++) {
-        selectedList.item(i).classList.remove('selected');
+    if (selectedItem != null) {
+        selectedItem.classList.remove('selected');
     }
 
     document.getElementById('seat-no').value = mySeat;
@@ -385,7 +425,15 @@ const selectMySeat = (mySeat) => {
     document.getElementById('regist-reservation-btn').focus();  // 예약 버튼에 포커스
 };
 
+/**
+ * 예약 버튼을 클릭시 예약 등록을 요청한다.
+ */
 const make_reservation = async () => {
+    if (localStorage.getItem('userId') === null) {
+        alert('로그인이 필요합니다, 로그인 후 다시 시도해주세요');
+        document.getElementById('account-field').focus();
+        return;
+    }
     const userId = Number(localStorage.getItem('userId'));
     const runningTimeId = Number(document.getElementById('reservation-running-time-id').value);
     const seatNo = document.getElementById('seat-no').value;
@@ -401,10 +449,36 @@ const make_reservation = async () => {
     })
         .then((response) => response.json())
         .then((json) => {
-            alert("예약에 성공했습니다.");
-            location.reload()
+            console.log('예약 API 결과', json);
+            alert("예약을 생성했습니다. 5분 이내 결제를 완료해주세요.");
+            changePage(1);
         }).catch((error) => {
             console.error(error);
             alert('예약 등록에 실패했습니다. 잠시 후 다시 시도해주세요.');
-        })
+        });
+};
+
+/**
+ * 하단의 예약 관련 화면을 초기화한다.
+ */
+const cleanReservationForm = () => {
+    // 좌석 현황 화면 초기화
+    const tableBody = document.getElementById('reservation-seat-info-body');
+    const existingRows = tableBody.querySelectorAll('tr');
+    existingRows.forEach(row => row.remove());
+
+    // 선택 내용 화면 초기화
+    document.getElementById('reservation-task-what').innerText = '';
+    document.getElementById('reservation-task-when').innerText = '';
+    document.getElementById('reservation-task-where-cinema').innerText = '';
+    document.getElementById('reservation-task-where-screen').innerText = '';
+    document.getElementById('reservation-running-time-id').value = '';
+    document.getElementById('seat-no').value = '';
+};
+
+/**
+ * 나의 예약 목록을 조회한다.
+ */
+const getMyReservation = async () => {
+    
 }
