@@ -2,6 +2,7 @@ package devgraft.dgcinemabackend.reservation.api;
 
 import static devgraft.dgcinemabackend.reservation.ReservationFixture.*;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.assertj.core.api.Assertions;
@@ -54,7 +55,7 @@ class ReservationApiTest {
 	}
 
 	//////////////////////// 예약 좌석 조회 ////////////////////////
-	
+
 	@Test
 	@DisplayName("예약 좌석 조회시 상영 시간은 존재해야 한다")
 	void seat_check_should_throw_exception_when_running_time_not_found() {
@@ -135,10 +136,36 @@ class ReservationApiTest {
 	}
 
 	@Test
+	@DisplayName("같은 자리에 중복으로 예약할 수 없다")
+	void register_should_throw_exception_when_seat_already_exists() {
+		// given
+		final Reservation reservation = anReservation().build();
+
+		final ReservationContext reservationContext = new ReservationContext(
+			reservation.getUser().getUserId(),
+			reservation.getRunningTime().getRunningTimeId(),
+			reservation.getSeatNo());
+
+		Mockito.when(dgUserFinder.findById(Mockito.anyLong())).thenReturn(Optional.of(reservation.getUser()));
+		Mockito.when(runningTimeFinder.findById(Mockito.anyLong()))
+			.thenReturn(Optional.of(reservation.getRunningTime()));
+		Mockito.when(reservationRepository.findSeatNoByRunningTime(Mockito.any())).thenReturn(List.of("A1", "A2"));
+
+		// when
+		final IllegalArgumentException exception = Assertions.catchThrowableOfType(
+			IllegalArgumentException.class, () -> reservationApp.register(reservationContext));
+
+		// then
+		Assertions.assertThat(exception).isNotNull();
+		Assertions.assertThat(exception.getMessage())
+			.isEqualTo(ReservationExceptionMessage.ALREADY_SEAT_NO_HAS_RESERVED.getMessage());
+	}
+
+	@Test
 	@DisplayName("예약을 정상적으로 등록해야 한다.")
 	void register_should_save_reservation() {
 		// given
-		Reservation reservation = anReservation().build();
+		final Reservation reservation = anReservation().build();
 
 		final ReservationContext reservationContext = new ReservationContext(
 			reservation.getUser().getUserId(),
