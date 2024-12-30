@@ -5,4 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import devgraft.dgcinemabackend.payment.domain.Payment;
 
 interface PaymentJpaRepository extends JpaRepository<Payment, Long> {
+	Payment save(final Payment payment);
 }

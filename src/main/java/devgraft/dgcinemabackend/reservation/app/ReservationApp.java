@@ -5,8 +5,10 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import devgraft.dgcinemabackend.cinema.domain.Cinema;
+import devgraft.dgcinemabackend.payment.domain.Payment;
 import devgraft.dgcinemabackend.reservation.domain.CinemaFinder;
 import devgraft.dgcinemabackend.reservation.domain.DgUserFinder;
+import devgraft.dgcinemabackend.reservation.domain.PaymentRegister;
 import devgraft.dgcinemabackend.reservation.domain.Reservation;
 import devgraft.dgcinemabackend.reservation.domain.ReservationContext;
 import devgraft.dgcinemabackend.reservation.domain.ReservationExceptionMessage;
@@ -27,6 +29,7 @@ public class ReservationApp implements ReservationUseCase {
 	private final DgUserFinder dgUserFinder;
 	private final RunningTimeFinder runningTimeFinder;
 	private final CinemaFinder cinemaFinder;
+	private final PaymentRegister paymentRegister;
 
 	public List<String> seatCheck(final Long runningTimeId) {
 		log.info("예약된 좌석 조회", runningTimeId);
@@ -69,10 +72,17 @@ public class ReservationApp implements ReservationUseCase {
 		final Cinema cinema = cinemaFinder.findById(runningTime.getScreenRoom().getCinemaId()).orElseThrow(
 			() -> new IllegalArgumentException(ReservationExceptionMessage.CINEMA_NOT_FOUND.getMessage()));
 
+		// 6. 결제 생성
+		final Payment payment = paymentRegister.save(Payment.builder()
+			.amount(10000)  // 한 장 당 10000원 단일
+			.reservation(result)
+			.result(Boolean.FALSE)
+			.build());
+
 		return new ReservationResult(
 			result.getReservationId(), user.getNickname(), runningTime.getStartTime(),
 			runningTime.getMovie().getTitle(), cinema.getName(), runningTime.getScreenRoom().getScreenNumber(),
-			result.getSeatNo());
+			result.getSeatNo(), payment.getPaymentId());
 	}
 
 	protected RunningTime getRunningTime(final Long runningTimeId) {

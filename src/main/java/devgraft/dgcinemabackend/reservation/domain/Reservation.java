@@ -5,6 +5,9 @@ import devgraft.dgcinemabackend.runningtime.domain.RunningTime;
 import devgraft.dgcinemabackend.user.domain.DgUser;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -27,15 +30,20 @@ public class Reservation extends BaseEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long reservationId;             // 아이디
 
-	@ManyToOne(fetch = jakarta.persistence.FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "user_id")
 	private DgUser user;                    // 예약 사용자
 
-	@ManyToOne(fetch = jakarta.persistence.FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "runningTime_id")
 	private RunningTime runningTime;        // 상영시간
 
 	// @TODO: 좌석 번호 체계 구성
 	@Column(nullable = false, length = 10)
 	private String seatNo;                  // 좌석번호
+
+	@Column(nullable = false)
+	@Enumerated(EnumType.STRING)
+	@Builder.Default
+	private ReservationStatus status = ReservationStatus.PENDING;   // 예약 상태
 }

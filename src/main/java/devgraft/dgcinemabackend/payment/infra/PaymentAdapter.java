@@ -2,6 +2,7 @@ package devgraft.dgcinemabackend.payment.infra;
 
 import org.springframework.stereotype.Component;
 
+import devgraft.dgcinemabackend.payment.domain.Payment;
 import devgraft.dgcinemabackend.payment.domain.PaymentRepository;
 
 @Component
@@ -12,4 +13,8 @@ class PaymentAdapter implements PaymentRepository {
 		this.paymentJpaRepository = paymentJpaRepository;
 	}
 
+	@Override
+	public Payment save(Payment payment) {
+		return paymentJpaRepository.save(payment);
+	}
 }

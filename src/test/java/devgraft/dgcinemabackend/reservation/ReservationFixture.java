@@ -6,6 +6,7 @@ import java.util.List;
 import devgraft.dgcinemabackend.cinema.domain.Cinema;
 import devgraft.dgcinemabackend.cinema.domain.ScreenRoom;
 import devgraft.dgcinemabackend.movie.domain.Movie;
+import devgraft.dgcinemabackend.payment.domain.Payment;
 import devgraft.dgcinemabackend.reservation.domain.Reservation;
 import devgraft.dgcinemabackend.runningtime.domain.RunningTime;
 import devgraft.dgcinemabackend.user.domain.DgUser;
@@ -50,5 +51,13 @@ public class ReservationFixture {
 			.movieId(1L)
 			.title("제목")
 			.director("감독");
+	}
+
+	public static Payment.PaymentBuilder anPayment() {
+		return Payment.builder()
+			.paymentId(1L)
+			.amount(10000)
+			.reservation(anReservation().build())
+			.result(Boolean.FALSE);
 	}
 }

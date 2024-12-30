@@ -16,9 +16,11 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import devgraft.dgcinemabackend.payment.domain.Payment;
 import devgraft.dgcinemabackend.reservation.app.ReservationApp;
 import devgraft.dgcinemabackend.reservation.domain.CinemaFinder;
 import devgraft.dgcinemabackend.reservation.domain.DgUserFinder;
+import devgraft.dgcinemabackend.reservation.domain.PaymentRegister;
 import devgraft.dgcinemabackend.reservation.domain.Reservation;
 import devgraft.dgcinemabackend.reservation.domain.ReservationContext;
 import devgraft.dgcinemabackend.reservation.domain.ReservationExceptionMessage;
@@ -39,6 +41,9 @@ class ReservationApiTest {
 
 	@Mock
 	private CinemaFinder cinemaFinder;
+
+	@Mock
+	private PaymentRegister paymentRegister;
 
 	@Mock
 	private ReservationRepository reservationRepository;
@@ -175,17 +180,20 @@ class ReservationApiTest {
 		final ArgumentCaptor<Long> runningTimeCaptor = ArgumentCaptor.forClass(Long.class);
 		final ArgumentCaptor<Long> userCaptor = ArgumentCaptor.forClass(Long.class);
 		final ArgumentCaptor<Reservation> reservationCaptor = ArgumentCaptor.forClass(Reservation.class);
+		final ArgumentCaptor<Payment> paymentCaptor = ArgumentCaptor.forClass(Payment.class);
 
 		Mockito.when(dgUserFinder.findById(Mockito.anyLong())).thenReturn(Optional.of(reservation.getUser()));
 		Mockito.when(cinemaFinder.findById(Mockito.anyLong())).thenReturn(Optional.of(anCinema().build()));
 		Mockito.when(runningTimeFinder.findById(Mockito.anyLong())).thenReturn(Optional.of(anRunningTime().build()));
 		Mockito.when(reservationRepository.save(Mockito.any())).thenReturn(reservation);
+		Mockito.when(paymentRegister.save(Mockito.any())).thenReturn(anPayment().reservation(reservation).build());
 
 		// when
 		ReservationResult result = reservationApp.register(reservationContext);
 		Mockito.verify(dgUserFinder, Mockito.times(1)).findById(userCaptor.capture());
 		Mockito.verify(runningTimeFinder, Mockito.times(1)).findById(runningTimeCaptor.capture());
 		Mockito.verify(reservationRepository, Mockito.times(1)).save(reservationCaptor.capture());
+		Mockito.verify(paymentRegister, Mockito.times(1)).save(paymentCaptor.capture());
 
 		// @TODO: [재검토] 정상 동작 API 테스트는 어디까지가 좋은가?
 		// then
@@ -197,5 +205,7 @@ class ReservationApiTest {
 			.isEqualTo(reservation.getRunningTime().getRunningTimeId());    // 상영시간
 		Assertions.assertThat(reservationCaptor.getValue().getSeatNo())
 			.isEqualTo(reservation.getSeatNo());                            // 좌석
+		Assertions.assertThat(paymentCaptor.getValue().getReservation())
+			.isEqualTo(reservation);                                        // 결제 아이디
 	}
 }
