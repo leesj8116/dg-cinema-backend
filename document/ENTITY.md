@@ -36,6 +36,7 @@ erDiagram
         Long user_id FK "사용자_엔티티"
         Long running_time_id FK "상영시간_아이디"
         String seet_no "좌석번호"
+        Enum status "예약 상태 (결제 대기, 완료, 취소)"
     }
 
     "RunningTime(상영시간)" {
@@ -46,12 +47,19 @@ erDiagram
         LocalDateTime start_time "상영시작시간"
     }
 
+    "Payment(결제)" {
+        Long payment_id PK "결제_아이디"
+        Long reservation_id FK "예약_아이디"
+        Integer amount "금액"
+        Boolean result "결과(성공, 실패)"
+    }
+
     "Movie(영화)" ||--o{ "RunningTime(상영시간)": "영화는 0 ~ n 회 상영한다"
     "ScreenRoom(상영관)" ||--o{ "RunningTime(상영시간)": "상영관은 여러 상영시간을 갖는다"
     "Cinema(극장)" ||--|{ "ScreenRoom(상영관)": "극장은 여러개의 상영관을 갖는다"
     "User(사용자)" ||--o{ "Reservation(예약)": "사용자는 여러 예약을 갖는다"
     "RunningTime(상영시간)" ||--o{ "Reservation(예약)": "상영시간마다 0 ~ n개의 예약을 갖는다"
-
+    "Reservation(예약)" ||--o{ "Payment(결제)": "상황에 따라 예약 하나당 결제를 여러 번 시도 할 수 있다"
 ```
 
 ### 제약 사항
