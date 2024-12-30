@@ -10,9 +10,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         showLoginInfoArea();
     }
 
-    changePage(0);
-
-    getCinemasApi().then((json) => {
+    await getCinemasApi().then((json) => {
         console.log('극장 정보', json);
 
         // 극장 정보는 재조합하여 localStorage에 저장, 사용
@@ -26,13 +24,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.error(error);
         alert('극장 목록을 조회할 수 없습니다. 잠시 후 다시 시도해주세요.');
     });
+
+    await changePage(0);
 });
 
 /**
  * 메인 화면에서 '예약 하기' 화면과 '예약 확인' 화면을 이동한다.
  * @param pageNo
  */
-const changePage = (pageNo = 0) => {
+const changePage = async (pageNo = 0) => {
     const mainPage = document.getElementById('tab-main');
     const reservationPage = document.getElementById('tab-my-reservation');
 
@@ -49,23 +49,24 @@ const changePage = (pageNo = 0) => {
             reservationPage.style.display = 'none';
 
             cleanReservationForm();
-            getMoviesApi()
+
+            await getMoviesApi()
                 .then((json) => {
                     updateMovieTable(json);
                 }).catch((error) => {
-                console.error(error);
-                alert('영화 목록을 조회할 수 없습니다. 잠시 후 다시 시도해주세요.');
-            });
+                    console.error(error);
+                    alert('영화 목록을 조회할 수 없습니다. 잠시 후 다시 시도해주세요.');
+                });
 
             const title = document.getElementById('search-movie-title').value;
-            searchRunningTimeByMovieTitleApi(title)
+            await searchRunningTimeByMovieTitleApi(title)
                 .then((json) => {
                     console.log('상영시간 정보', json);
                     uploadRunningTimetable(json);
                 }).catch((error) => {
-                console.error(error);
-                alert('상영시간 정보를 조회할 수 없습니다. 잠시 후 다시 시도해주세요.');
-            });
+                    console.error(error);
+                    alert('상영시간 정보를 조회할 수 없습니다. 잠시 후 다시 시도해주세요.');
+                });
 
             document.getElementById('nav-main').classList.add('selected');
             document.getElementById('nav-my-reservation').onclick = () => changePage(1);
@@ -79,7 +80,7 @@ const changePage = (pageNo = 0) => {
             document.getElementById('nav-main').onclick = () => changePage(0);
             document.getElementById('nav-my-reservation').classList.add('selected');
 
-            getMyReservation();
+            checkMyReservation();
 
             break;
     }
@@ -231,7 +232,7 @@ const uploadRunningTimetable = (runningTimes) => {
 /**
  * '로그인' 버튼 클릭시 로그인을 흉내낸다.
  */
-const loginEvent = async () => {
+const loginEvent = () => {
     const accountElement = document.getElementById('account-field');
     const passwordElement = document.getElementById('password-field');
     const accountValue = accountElement.value;
@@ -408,6 +409,9 @@ const cleanReservationForm = () => {
     document.getElementById('seat-no').value = '';
 };
 
+/**
+ * 예약 버튼을 클릭시 예약 API를 호출한다.
+ */
 const makeReservation = async () => {
     if (localStorage.getItem('userId') === null) {
         alert('로그인이 필요합니다, 로그인 후 다시 시도해주세요');
@@ -428,4 +432,17 @@ const makeReservation = async () => {
             console.error(error);
             alert('예약 등록에 실패했습니다. 잠시 후 다시 시도해주세요.');
         });
+};
+
+const checkMyReservation = () => {
+    if (localStorage.getItem('userId') === null) {
+        alert('로그인이 필요합니다, 로그인 후 다시 시도해주세요');
+        document.getElementById('account-field').focus();
+        return;
+    }
+
+    const userId = Number(localStorage.getItem('userId'));
+    console.log('userId', userId);
+    
+    // @TODO: 예약 정보 가져오기 API 구현 및 연계
 }

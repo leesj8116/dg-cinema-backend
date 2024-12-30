@@ -53,6 +53,6 @@ const registerReservationApi = async (userId, runningTimeId, seatNo) => {
 /**
  * 나의 예약 목록을 조회한다.
  */
-const getMyReservation = async () => {
+const getMyReservationApi = async () => {
 
 }
