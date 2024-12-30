@@ -10,8 +10,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         showLoginInfoArea();
     }
 
-    await getCinemasApi().then((json) => {
-        console.debug('극장 정보', json);
+    changePage(0);
+
+    getCinemasApi().then((json) => {
+        console.log('극장 정보', json);
 
         // 극장 정보는 재조합하여 localStorage에 저장, 사용
         const cinemas = {};
@@ -24,15 +26,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.error(error);
         alert('극장 목록을 조회할 수 없습니다. 잠시 후 다시 시도해주세요.');
     });
-
-    await changePage(0);
 });
 
 /**
  * 메인 화면에서 '예약 하기' 화면과 '예약 확인' 화면을 이동한다.
  * @param pageNo
  */
-const changePage = async (pageNo = 0) => {
+const changePage = (pageNo = 0) => {
     const mainPage = document.getElementById('tab-main');
     const reservationPage = document.getElementById('tab-my-reservation');
 
@@ -49,26 +49,26 @@ const changePage = async (pageNo = 0) => {
             reservationPage.style.display = 'none';
 
             cleanReservationForm();
-            await getMoviesApi()
+            getMoviesApi()
                 .then((json) => {
                     updateMovieTable(json);
                 }).catch((error) => {
-                    console.error(error);
-                    alert('영화 목록을 조회할 수 없습니다. 잠시 후 다시 시도해주세요.');
-                });
+                console.error(error);
+                alert('영화 목록을 조회할 수 없습니다. 잠시 후 다시 시도해주세요.');
+            });
 
             const title = document.getElementById('search-movie-title').value;
-            await searchRunningTimeByMovieTitleApi(title)
+            searchRunningTimeByMovieTitleApi(title)
                 .then((json) => {
                     console.log('상영시간 정보', json);
                     uploadRunningTimetable(json);
                 }).catch((error) => {
-                    console.error(error);
-                    alert('상영시간 정보를 조회할 수 없습니다. 잠시 후 다시 시도해주세요.');
-                });
+                console.error(error);
+                alert('상영시간 정보를 조회할 수 없습니다. 잠시 후 다시 시도해주세요.');
+            });
 
             document.getElementById('nav-main').classList.add('selected');
-            document.getElementById('nav-my-reservation').onclick = async () => await changePage(1);
+            document.getElementById('nav-my-reservation').onclick = () => changePage(1);
 
             break;
         case 1:
@@ -76,10 +76,10 @@ const changePage = async (pageNo = 0) => {
             mainPage.style.display = 'none';
             reservationPage.style.display = 'block';
 
-            document.getElementById('nav-main').onclick = async () => await changePage(0);
+            document.getElementById('nav-main').onclick = () => changePage(0);
             document.getElementById('nav-my-reservation').classList.add('selected');
 
-            await getMyReservation();
+            getMyReservation();
 
             break;
     }
