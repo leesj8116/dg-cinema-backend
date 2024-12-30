@@ -10,7 +10,21 @@ document.addEventListener('DOMContentLoaded', async () => {
         showLoginInfoArea();
     }
 
-    await getCinemas();
+    await getCinemasApi().then((json) => {
+        console.debug('극장 정보', json);
+
+        // 극장 정보는 재조합하여 localStorage에 저장, 사용
+        const cinemas = {};
+        for (let i = 0; i < json.length; i++) {
+            cinemas[json[i].cinemaId] = {'name': json[i].name, 'location': json[i].location};
+        }
+        localStorage.setItem('cinemas', JSON.stringify(cinemas));
+
+    }).catch((error) => {
+        console.error(error);
+        alert('극장 목록을 조회할 수 없습니다. 잠시 후 다시 시도해주세요.');
+    });
+
     await changePage(0);
 });
 
@@ -35,8 +49,23 @@ const changePage = async (pageNo = 0) => {
             reservationPage.style.display = 'none';
 
             cleanReservationForm();
-            await getMovies();
-            await searchRunningTimeByMovieTitle();
+            await getMoviesApi()
+                .then((json) => {
+                    updateMovieTable(json);
+                }).catch((error) => {
+                    console.error(error);
+                    alert('영화 목록을 조회할 수 없습니다. 잠시 후 다시 시도해주세요.');
+                });
+
+            const title = document.getElementById('search-movie-title').value;
+            await searchRunningTimeByMovieTitleApi(title)
+                .then((json) => {
+                    console.log('상영시간 정보', json);
+                    uploadRunningTimetable(json);
+                }).catch((error) => {
+                    console.error(error);
+                    alert('상영시간 정보를 조회할 수 없습니다. 잠시 후 다시 시도해주세요.');
+                });
 
             document.getElementById('nav-main').classList.add('selected');
             document.getElementById('nav-my-reservation').onclick = async () => await changePage(1);
@@ -54,63 +83,6 @@ const changePage = async (pageNo = 0) => {
 
             break;
     }
-};
-
-/**
- * 영화 목록을 가져온다.
- * @returns {Promise<void>}
- */
-const getMovies = async () => {
-    await fetch('/movie')
-        .then((response) => response.json())
-        .then((json) => {
-            updateMovieTable(json);
-        }).catch((error) => {
-            console.error(error);
-            alert('영화 목록을 조회할 수 없습니다. 잠시 후 다시 시도해주세요.');
-        });
-};
-
-/**
- * 극장 목록을 조회하여 localStorage에 저장한다
- */
-const getCinemas = async () => {
-    await fetch('/cinema')
-        .then((response) => response.json())
-        .then((json) => {
-            console.log('극장 정보', json);
-
-            // 극장 정보는 재조합하여 localStorage에 저장, 사용
-            const cinemas = {};
-            for (let i = 0; i < json.length; i++) {
-                cinemas[json[i].cinemaId] = {'name': json[i].name, 'location': json[i].location};
-            }
-            localStorage.setItem('cinemas', JSON.stringify(cinemas));
-
-        }).catch((error) => {
-            console.error(error);
-            alert('극장 목록을 조회할 수 없습니다. 잠시 후 다시 시도해주세요.');
-        });
-};
-
-/**
- * 영화 제목 입력을 통해 영화를 조회한다.
- * @param title
- * @returns {Promise<void>}
- */
-const searchRunningTimeByMovieTitle = async () => {
-    const title = document.getElementById('search-movie-title').value;
-    const queryString = new URLSearchParams({'title': title}).toString();
-
-    await fetch(`/running-time?${queryString}`)
-        .then((response) => response.json())
-        .then((json) => {
-            console.log('상영시간 정보', json);
-            uploadRunningTimetable(json);
-        }).catch((error) => {
-            console.error(error);
-            alert('상영시간 정보를 조회할 수 없습니다. 잠시 후 다시 시도해주세요.');
-        });
 };
 
 /**
@@ -257,32 +229,6 @@ const uploadRunningTimetable = (runningTimes) => {
 }
 
 /**
- * '예매하기' 클릭시, 선택한 상영 시간의 잔여 좌석을 확인한다.
- * @returns {Promise<void>}
- */
-const reservationCheckSeat = async (runningTimeId, title, startTime, cinema, screenNumber) => {
-    // 극장 정보 조회
-    const cinemas = JSON.parse(localStorage.getItem('cinemas'));
-
-    document.getElementById('reservation-task-what').innerText = title;
-    document.getElementById('reservation-task-when').innerText = startTime;
-    document.getElementById('reservation-task-where-cinema').innerText = `${cinemas[cinema].name} (${cinemas[cinema].location})`;
-    document.getElementById('reservation-task-where-screen').innerText = `${screenNumber}관`;
-    document.getElementById('reservation-running-time-id').value = runningTimeId;
-
-    const queryString = new URLSearchParams({'runningTime': runningTimeId}).toString();
-    // 좌석 현황 조회 후 화면에 업로드
-    await fetch(`/reservation/seat?${queryString}`)
-        .then((response) => response.json())
-        .then((json) => {
-            updateReservationSeat(json);
-        }).catch((error) => {
-            console.error(error);
-            alert('잔여 좌석 조회에 실패했습니다. 잠시 후에 다시 시도해주세요.');
-        })
-}
-
-/**
  * '로그인' 버튼 클릭시 로그인을 흉내낸다.
  */
 const loginEvent = async () => {
@@ -372,6 +318,24 @@ const passByMovieTitle = (movieName) => {
     document.getElementById('search-movie-title-btn').focus();
 };
 
+const reservationCheckSeat = async (runningTimeId, title, startTime, cinema, screenNumber) => {
+    // 극장 정보 조회
+    const cinemas = JSON.parse(localStorage.getItem('cinemas'));
+
+    document.getElementById('reservation-task-what').innerText = title;
+    document.getElementById('reservation-task-when').innerText = startTime;
+    document.getElementById('reservation-task-where-cinema').innerText = `${cinemas[cinema].name} (${cinemas[cinema].location})`;
+    document.getElementById('reservation-task-where-screen').innerText = `${screenNumber}관`;
+    document.getElementById('reservation-running-time-id').value = runningTimeId;
+
+    await reservationCheckSeatApi(runningTimeId)
+        .then((json) => {
+            updateReservationSeat(json);
+        }).catch((error) => {
+            console.error(error);
+            alert('잔여 좌석 조회에 실패했습니다. 잠시 후에 다시 시도해주세요.');
+        })
+}
 
 /**
  * 예약 좌석 현황을 그려준다
@@ -425,38 +389,6 @@ const selectMySeat = (mySeat) => {
     document.getElementById('regist-reservation-btn').focus();  // 예약 버튼에 포커스
 };
 
-/**
- * 예약 버튼을 클릭시 예약 등록을 요청한다.
- */
-const make_reservation = async () => {
-    if (localStorage.getItem('userId') === null) {
-        alert('로그인이 필요합니다, 로그인 후 다시 시도해주세요');
-        document.getElementById('account-field').focus();
-        return;
-    }
-    const userId = Number(localStorage.getItem('userId'));
-    const runningTimeId = Number(document.getElementById('reservation-running-time-id').value);
-    const seatNo = document.getElementById('seat-no').value;
-
-    await fetch(`/reservation`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json;charset=UTF-8'
-        },
-        body: JSON.stringify({
-            userId, runningTimeId, seatNo
-        })
-    })
-        .then((response) => response.json())
-        .then((json) => {
-            console.log('예약 API 결과', json);
-            alert("예약을 생성했습니다. 5분 이내 결제를 완료해주세요.");
-            changePage(1);
-        }).catch((error) => {
-            console.error(error);
-            alert('예약 등록에 실패했습니다. 잠시 후 다시 시도해주세요.');
-        });
-};
 
 /**
  * 하단의 예약 관련 화면을 초기화한다.
@@ -476,9 +408,24 @@ const cleanReservationForm = () => {
     document.getElementById('seat-no').value = '';
 };
 
-/**
- * 나의 예약 목록을 조회한다.
- */
-const getMyReservation = async () => {
-    
+const makeReservation = async () => {
+    if (localStorage.getItem('userId') === null) {
+        alert('로그인이 필요합니다, 로그인 후 다시 시도해주세요');
+        document.getElementById('account-field').focus();
+        return;
+    }
+
+    const userId = Number(localStorage.getItem('userId'));
+    const runningTimeId = Number(document.getElementById('reservation-running-time-id').value);
+    const seatNo = document.getElementById('seat-no').value;
+
+    await registerReservationApi(userId, runningTimeId, seatNo)
+        .then((json) => {
+            console.log('예약 API 결과', json);
+            alert("예약을 생성했습니다. 5분 이내 결제를 완료해주세요.");
+            changePage(1);
+        }).catch((error) => {
+            console.error(error);
+            alert('예약 등록에 실패했습니다. 잠시 후 다시 시도해주세요.');
+        });
 }

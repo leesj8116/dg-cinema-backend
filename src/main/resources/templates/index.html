@@ -6,6 +6,7 @@
     <meta charset="UTF-8">
     <title>DG-Cinema</title>
     <link rel="stylesheet" type="text/css" th:href="@{/css/index.css}">
+    <script th:src="@{/js/api.js}"></script>
     <script th:src="@{/js/index.js}"></script>
 </head>
 <body>
@@ -64,7 +65,7 @@
                 <p>
                     <label for="search-movie-title">영화 제목 : </label>
                     <input id="search-movie-title" type="text"/>
-                    <button id="search-movie-title-btn" type="button" onclick="searchRunningTimeByMovieTitle()">검색
+                    <button id="search-movie-title-btn" type="button" onclick="searchRunningTimeByMovieTitleApi()">검색
                     </button>
                 </p>
             </div>
@@ -124,7 +125,7 @@
                 <input id="seat-no" type="text" pattern="^[A-H][0-9]{1,2}$" disabled/>
             </p>
             <p>
-                <button id="regist-reservation-btn" type="button" onclick="make_reservation()">예약</button>
+                <button id="regist-reservation-btn" type="button" onclick="makeReservation()">예약</button>
             </p>
         </div>
     </div>
