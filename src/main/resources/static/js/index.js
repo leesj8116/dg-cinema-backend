@@ -73,6 +73,10 @@ const changePage = async (pageNo = 0) => {
 
             break;
         case 1:
+            if (loginCheck()) {
+                return;
+            }
+
             // 예약 확인 화면
             mainPage.style.display = 'none';
             reservationPage.style.display = 'block';
@@ -413,15 +417,21 @@ const cleanReservationForm = () => {
  * 예약 버튼을 클릭시 예약 API를 호출한다.
  */
 const makeReservation = async () => {
-    if (localStorage.getItem('userId') === null) {
-        alert('로그인이 필요합니다, 로그인 후 다시 시도해주세요');
-        document.getElementById('account-field').focus();
+    if (loginCheck())
         return;
-    }
 
     const userId = Number(localStorage.getItem('userId'));
     const runningTimeId = Number(document.getElementById('reservation-running-time-id').value);
     const seatNo = document.getElementById('seat-no').value;
+
+    if (runningTimeId == 0) {
+        alert('예약할 상영 시간을 선택해주세요.');
+        return;
+    }
+    if (seatNo === '') {
+        alert('예약할 좌석을 선택해주세요.');
+        return;
+    }
 
     await registerReservationApi(userId, runningTimeId, seatNo)
         .then((json) => {
@@ -435,14 +445,20 @@ const makeReservation = async () => {
 };
 
 const checkMyReservation = () => {
-    if (localStorage.getItem('userId') === null) {
-        alert('로그인이 필요합니다, 로그인 후 다시 시도해주세요');
-        document.getElementById('account-field').focus();
-        return;
-    }
+
 
     const userId = Number(localStorage.getItem('userId'));
     console.log('userId', userId);
-    
+
     // @TODO: 예약 정보 가져오기 API 구현 및 연계
+}
+
+const loginCheck = () => {
+    if (localStorage.getItem('userId') === null) {
+        alert('로그인이 필요합니다, 로그인 후 다시 시도해주세요');
+        document.getElementById('account-field').focus();
+        return true;
+    }
+
+    return false;
 }
