@@ -5,10 +5,10 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import devgraft.dgcinemabackend.cinema.domain.Cinema;
-import devgraft.dgcinemabackend.payment.domain.Payment;
 import devgraft.dgcinemabackend.reservation.domain.CinemaFinder;
 import devgraft.dgcinemabackend.reservation.domain.DgUserFinder;
-import devgraft.dgcinemabackend.reservation.domain.PaymentRegister;
+import devgraft.dgcinemabackend.reservation.domain.Payment;
+import devgraft.dgcinemabackend.reservation.domain.PaymentRepository;
 import devgraft.dgcinemabackend.reservation.domain.Reservation;
 import devgraft.dgcinemabackend.reservation.domain.ReservationContext;
 import devgraft.dgcinemabackend.reservation.domain.ReservationExceptionMessage;
@@ -26,10 +26,10 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class ReservationApp implements ReservationUseCase {
 	private final ReservationRepository reservationRepository;
-	private final DgUserFinder dgUserFinder;
+	private final PaymentRepository paymentRepository;
 	private final RunningTimeFinder runningTimeFinder;
+	private final DgUserFinder dgUserFinder;
 	private final CinemaFinder cinemaFinder;
-	private final PaymentRegister paymentRegister;
 
 	public List<String> seatCheck(final Long runningTimeId) {
 		log.info("예약된 좌석 조회", runningTimeId);
@@ -73,7 +73,7 @@ public class ReservationApp implements ReservationUseCase {
 			() -> new IllegalArgumentException(ReservationExceptionMessage.CINEMA_NOT_FOUND.getMessage()));
 
 		// 6. 결제 생성
-		final Payment payment = paymentRegister.save(Payment.builder()
+		final Payment payment = paymentRepository.save(Payment.builder()
 			.amount(10000)  // 한 장 당 10000원 단일
 			.reservation(result)
 			.result(Boolean.FALSE)

@@ -38,4 +38,9 @@ public class ReservationApi {
 	public ReservationResult register(@RequestBody ReservationContext context) {
 		return reservationApp.register(context);
 	}
+
+	@PostMapping("/reservation/my")
+	public ReservationResult getUserReservation(@RequestParam(name = "userId") Long userId) {
+		return null;
+	}
 }

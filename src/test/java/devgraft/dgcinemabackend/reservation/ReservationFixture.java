@@ -6,7 +6,7 @@ import java.util.List;
 import devgraft.dgcinemabackend.cinema.domain.Cinema;
 import devgraft.dgcinemabackend.cinema.domain.ScreenRoom;
 import devgraft.dgcinemabackend.movie.domain.Movie;
-import devgraft.dgcinemabackend.payment.domain.Payment;
+import devgraft.dgcinemabackend.reservation.domain.Payment;
 import devgraft.dgcinemabackend.reservation.domain.Reservation;
 import devgraft.dgcinemabackend.runningtime.domain.RunningTime;
 import devgraft.dgcinemabackend.user.domain.DgUser;
