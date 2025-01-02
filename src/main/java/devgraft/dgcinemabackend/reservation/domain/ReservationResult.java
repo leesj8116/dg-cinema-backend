@@ -22,7 +22,7 @@ public record ReservationResult(
 			reservation.getRunningTime().getScreenRoom().getCinemaId(),
 			reservation.getRunningTime().getScreenRoom().getScreenNumber(),
 			reservation.getSeatNo(),
-			reservation.getStatus().getDescription(),
+			reservation.getStatus().name(),
 			reservation.getCreatedDate()
 		);
 	}

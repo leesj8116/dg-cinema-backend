@@ -481,10 +481,9 @@ const checkMyReservation = async () => {
                 }
 
                 const actionMain = document.createElement('span');  // 예약 상황에 따라 기능이 달라짐
-
-                // @TODO: 서버에서 전달하는 메세지 값을 기준으로 분기 처리하는 게 마음에 들지 않음
+                
                 switch (reservation.status) {
-                    case '결제 대기':
+                    case 'PENDING':
                         actionMain.classList.add('payment');
                         actionMain.textContent = '결제';
                         actionMain.onclick = () => {
@@ -496,14 +495,14 @@ const checkMyReservation = async () => {
                         action.appendChild(actionCancel);
 
                         break;
-                    case '결제 완료':
+                    case 'SUCCESS':
                         action.appendChild(actionCancel);
 
                         break;
-                    case '예약 취소':
+                    case 'CANCEL':
                         // 필요시 추가
                         break;
-                    case '예약 만료':
+                    case 'EXPIRED':
                         // 필요시 추가
                         break;
                 }
