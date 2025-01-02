@@ -55,10 +55,15 @@ td {
     text-align: center;
 }
 
-table tr > td:last-child > span {
+table tr > td:last-child > span:not(.dummy) {
     color: #0000ff;
     text-decoration: underline;
     cursor: pointer;
+}
+
+table tr > td:last-child > span.dummy {
+    font-weight: bold;
+    color: #999;
 }
 
 table tr > td:last-child > span.past {

@@ -469,23 +469,36 @@ const checkMyReservation = async () => {
                 status.textContent = reservation.status;
 
                 const action = document.createElement('td');
-                const actionText = document.createElement('span');
-                action.appendChild(actionText);
+
+                const dummy = document.createElement('span');
+                dummy.classList.add('dummy')
+                dummy.textContent = ' | ';
+
+                const actionCancel = document.createElement('span');
+                actionCancel.textContent = '취소';
+                actionCancel.onclick = () => {
+                    alert(`취소 ${reservation.reservationId}`);
+                }
+
+                const actionMain = document.createElement('span');  // 예약 상황에 따라 기능이 달라짐
+
                 // @TODO: 서버에서 전달하는 메세지 값을 기준으로 분기 처리하는 게 마음에 들지 않음
                 switch (reservation.status) {
                     case '결제 대기':
-                        actionText.classList.add('payment');
-                        actionText.textContent = '결제';
-                        actionText.onclick = () => {
-                            alert('결제 실행');
+                        actionMain.classList.add('payment');
+                        actionMain.textContent = '결제';
+                        actionMain.onclick = () => {
+                            alert(`결제 실행 ${reservation.reservationId}`);
                         }
+
+                        action.appendChild(actionMain);
+                        action.appendChild(dummy);
+                        action.appendChild(actionCancel);
+
                         break;
                     case '결제 완료':
-                        actionText.classList.add('ticket');
-                        actionText.textContent = '티켓 확인';
-                        actionText.onclick = () => {
-                            alert('티켓 확인');
-                        }
+                        action.appendChild(actionCancel);
+
                         break;
                     case '예약 취소':
                         // 필요시 추가
@@ -534,9 +547,6 @@ const loginCheck = () => {
  */
 const dateStringSplit = (input = '') => {
     const strDate = (input.indexOf('.') !== -1) ? input.split('.')[0] : input;
-
-    console.log('input', input);
-    console.log('strDate', strDate);
 
     //// 상영 시간 계산
     const date = new Date(strDate);
