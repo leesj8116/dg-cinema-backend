@@ -40,7 +40,7 @@ public class ReservationApi {
 	}
 
 	@PostMapping("/reservation/my")
-	public ReservationResult getUserReservation(@RequestParam(name = "userId") Long userId) {
-		return null;
+	public List<ReservationResult> getUserReservation(@RequestParam(name = "userId") Long userId) {
+		return reservationApp.getUserReservations(userId);
 	}
 }

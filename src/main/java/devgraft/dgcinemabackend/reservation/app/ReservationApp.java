@@ -90,4 +90,8 @@ public class ReservationApp implements ReservationUseCase {
 			() -> new IllegalArgumentException(ReservationExceptionMessage.RUNNING_TIME_NOT_FOUND.getMessage())
 		);
 	}
+
+	public List<ReservationResult> getUserReservations(final Long userId) {
+		return null;
+	}
 }

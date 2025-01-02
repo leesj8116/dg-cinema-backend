@@ -208,4 +208,18 @@ class ReservationApiTest {
 		Assertions.assertThat(paymentCaptor.getValue().getReservation())
 			.isEqualTo(reservation);                                        // 결제 아이디
 	}
+
+	@Test
+	@DisplayName("예약 확인 기능은 유효한 사용자만 사용 가능하다")
+	void get_user_reservation_should_throw_exception_when_user_not_found() {
+		// given
+		Mockito.when(dgUserFinder.findById(Mockito.anyLong())).thenReturn(Optional.empty());
+
+		// when
+		final IllegalArgumentException exception = Assertions.catchThrowableOfType(
+			IllegalArgumentException.class, () -> reservationApp.getUserReservations(1L));
+
+		Assertions.assertThat(exception).isNotNull();
+		Assertions.assertThat(exception.getMessage()).isEqualTo(ReservationExceptionMessage.USER_NOT_FOUND.getMessage());
+	}
 }
