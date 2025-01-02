@@ -15,7 +15,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @RestControllerAdvice
-public class ReservationExceptionHandler extends CommonExceptionHandler {
+class ReservationExceptionHandler extends CommonExceptionHandler {
 	@ExceptionHandler(ReservationException.class)
 	public ResponseEntity<Object> handleReservationException(final ReservationException e) {
 		e.printStackTrace();

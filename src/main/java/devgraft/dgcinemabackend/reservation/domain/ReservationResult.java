@@ -7,9 +7,21 @@ public record ReservationResult(
 	String userName,            // 예약자 이름
 	LocalDateTime startTime,    // 상영 시작 시간
 	String movieTitle,          // 영화 이름
-	String cinemaName,          // 극장 이름
+	Long cinemaId,              // 극장 아이디
 	Long screenNumber,          // 상영관 번호
 	String seatNo,              // 좌석 번호
-	Long paymentId              // 결제 아이디
+	String status               // 결제 상태
 ) {
+	public static ReservationResult from(Reservation reservation) {
+		return new ReservationResult(
+			reservation.getReservationId(),
+			reservation.getUser().getNickname(),
+			reservation.getRunningTime().getStartTime(),
+			reservation.getRunningTime().getMovie().getTitle(),
+			reservation.getRunningTime().getScreenRoom().getCinemaId(),
+			reservation.getRunningTime().getScreenRoom().getScreenNumber(),
+			reservation.getSeatNo(),
+			reservation.getStatus().getDescription()
+		);
+	}
 }

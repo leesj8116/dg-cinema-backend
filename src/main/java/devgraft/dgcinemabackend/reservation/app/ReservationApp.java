@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import devgraft.dgcinemabackend.cinema.domain.Cinema;
 import devgraft.dgcinemabackend.common.exception.CommonErrorCode;
 import devgraft.dgcinemabackend.reservation.domain.CinemaFinder;
 import devgraft.dgcinemabackend.reservation.domain.DgUserFinder;
@@ -63,28 +62,20 @@ public class ReservationApp implements ReservationUseCase {
 			});
 
 		// 4. 예약 처리
-		Reservation result = reservationRepository.save(Reservation.builder()
+		Reservation reservation = reservationRepository.save(Reservation.builder()
 			.user(user)
 			.runningTime(runningTime)
 			.seatNo(context.seatNo())
 			.build());
 
-		// 5. 극장 조회 (검증 X, 결과 반환 위해 사용)
-		final Cinema cinema = cinemaFinder.findById(runningTime.getScreenRoom().getCinemaId()).orElseThrow(
-			() -> new ReservationException(ReservationErrorCode.CINEMA_NOT_FOUND)
-		);
-
-		// 6. 결제 생성
+		// 5. 결제 생성
 		final Payment payment = paymentRepository.save(Payment.builder()
 			.amount(10000)  // 한 장 당 10000원 단일
-			.reservation(result)
+			.reservation(reservation)
 			.result(Boolean.FALSE)
 			.build());
 
-		return new ReservationResult(
-			result.getReservationId(), user.getNickname(), runningTime.getStartTime(),
-			runningTime.getMovie().getTitle(), cinema.getName(), runningTime.getScreenRoom().getScreenNumber(),
-			result.getSeatNo(), payment.getPaymentId());
+		return ReservationResult.from(reservation);
 	}
 
 	protected RunningTime getRunningTime(final Long runningTimeId) {
@@ -102,6 +93,8 @@ public class ReservationApp implements ReservationUseCase {
 			() -> new ReservationException(ReservationErrorCode.USER_NOT_FOUND)
 		);
 
-		return null;
+		return reservationRepository.findAllByUser(user).stream().map(reservation ->
+			ReservationResult.from(reservation)
+		).toList();
 	}
 }

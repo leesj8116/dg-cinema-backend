@@ -8,6 +8,7 @@ import devgraft.dgcinemabackend.reservation.domain.Reservation;
 import devgraft.dgcinemabackend.reservation.domain.ReservationRepository;
 import devgraft.dgcinemabackend.reservation.domain.SeatNoMapping;
 import devgraft.dgcinemabackend.runningtime.domain.RunningTime;
+import devgraft.dgcinemabackend.user.domain.DgUser;
 import lombok.RequiredArgsConstructor;
 
 @Component
@@ -26,5 +27,10 @@ class ReservationAdapter implements ReservationRepository {
 	@Override
 	public Reservation save(final Reservation reservation) {
 		return reservationJpaRepository.save(reservation);
+	}
+
+	@Override
+	public List<Reservation> findAllByUser(DgUser user) {
+		return reservationJpaRepository.findAllByUser(user);
 	}
 }

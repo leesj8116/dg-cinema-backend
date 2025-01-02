@@ -448,10 +448,13 @@ const makeReservation = async () => {
 
 const checkMyReservation = async () => {
     const userId = Number(localStorage.getItem('userId'));
+    const cinemas = JSON.parse(localStorage.getItem('cinemas'));
 
     await getMyReservationApi(userId)
-        .then((json) => {
-            console.log('나의 예약 확인', json);
+        .then((list) => {
+            console.log('나의 예약 확인', list);
+            
+
         }).catch((error) => {
             console.error(error);
             alert('예약 목록 조회를 실패했습니다. 잠시 후 다시 시도해주세요.');

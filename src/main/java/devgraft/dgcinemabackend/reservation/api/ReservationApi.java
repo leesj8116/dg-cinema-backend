@@ -40,6 +40,11 @@ public class ReservationApi {
 		return reservationApp.register(context);
 	}
 
+	/**
+	 * 사용자의 예약 목록을 반환한다.
+	 * @param request userId
+	 * @return
+	 */
 	@PostMapping("/reservation/my")
 	public List<ReservationResult> getUserReservations(@RequestBody GetMyReservationRequest request) {
 		return reservationApp.getUserReservations(request.userId());
