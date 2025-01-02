@@ -4,9 +4,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
+/**
+ * https://velog.io/@woosim34/RestControllerAdvice를-이용한-예외처리
+ * 을 참조하여 ExceptionHandler 구현
+ */
 @RestControllerAdvice
 public class CommonExceptionHandler {
 	@ExceptionHandler({Exception.class})

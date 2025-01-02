@@ -1,17 +1,17 @@
-package devgraft.dgcinemabackend.reservation.infra;
+package devgraft.dgcinemabackend.cinema.infra;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import devgraft.dgcinemabackend.cinema.exception.CinemaException;
 import devgraft.dgcinemabackend.common.exception.CommonExceptionHandler;
 import devgraft.dgcinemabackend.common.exception.ErrorCode;
-import devgraft.dgcinemabackend.reservation.exception.ReservationException;
 
 @RestControllerAdvice
-class ReservationExceptionHandler extends CommonExceptionHandler {
-	@ExceptionHandler(ReservationException.class)
-	public ResponseEntity<Object> handleReservationException(final ReservationException e) {
+class CinemaExceptionHandler extends CommonExceptionHandler {
+	@ExceptionHandler(CinemaException.class)
+	public ResponseEntity<Object> handleCinemaException(CinemaException e) {
 		e.printStackTrace();
 
 		ErrorCode errorCode = e.getErrorCode();

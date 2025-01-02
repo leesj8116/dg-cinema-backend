@@ -1,30 +1,32 @@
 package devgraft.dgcinemabackend.user.domain;
 
+import devgraft.dgcinemabackend.user.exception.UserException;
+
 public record CreateUserRequest(String account, String password, String nickname) {
 	public CreateUserRequest {
 		if (account == null || account.isBlank()) {
-			throw new IllegalArgumentException("계정을 입력해주세요");
+			throw new UserException(UserErrorCode.ACCOUNT_HAS_REQUIRED_FIELD);
 		}
 
 		if (password == null || password.isBlank()) {
-			throw new IllegalArgumentException("비밀번호를 입력해주세요");
+			throw new UserException(UserErrorCode.PASSWORD_HAS_REQUIRED_FIELD);
 		}
 
 		if (nickname == null || nickname.isBlank()) {
-			throw new IllegalArgumentException("사용자 이름을 입력해주세요");
+			throw new UserException(UserErrorCode.NICKNAME_HAS_REQUIRED_FIELD);
 		}
 
 		if (account.length() > 50) {
-			throw new IllegalArgumentException("계정은 30글자 이내로 작성하여야 합니다.");
+			throw new UserException(UserErrorCode.ACCOUNT_HAS_LENGTH_UNDER_50);
 		}
 
 		// @TODO:  비밀번호 정책 검사
 		if (password.length() > 100) {
-			throw new IllegalArgumentException("비밀번호를 100글자 이내로 작성하여야 합니다.");
+			throw new UserException(UserErrorCode.PASSWORD_HAS_LENGTH_UNDER_100);
 		}
 
 		if (nickname.length() > 30) {
-			throw new IllegalArgumentException("사용자 이름은 30글자 이내로 작성하여야 합니다.");
+			throw new UserException(UserErrorCode.NICKNAME_HAS_LENGTH_UNDER_30);
 		}
 	}
 }

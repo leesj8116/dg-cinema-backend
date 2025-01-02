@@ -1,19 +1,24 @@
 package devgraft.dgcinemabackend.cinema.app;
 
+import devgraft.dgcinemabackend.cinema.domain.CinemaErrorCode;
+import devgraft.dgcinemabackend.cinema.exception.CinemaException;
+
 public record CreateCinemaRequest(
 	String name,
 	String location
 ) {
 	public CreateCinemaRequest {
-		if (name == null || name.isBlank())
-			throw new IllegalArgumentException("극장 이름을 입력해주세요.");
-		if (location == null || location.isBlank())
-			throw new IllegalArgumentException("극장 주소를 입력해주세요.");
+		if (name == null || name.isBlank()) {
+			throw new CinemaException(CinemaErrorCode.NAME_HAS_REQUIRED_FIELD);
+		}
+		if (location == null || location.isBlank()) {
+			throw new CinemaException(CinemaErrorCode.LOCATION_HAS_REQUIRED_FIELD);
+		}
 		if (name.length() > 50) {
-			throw new IllegalArgumentException("극장 이름은 50글자를 넘을 수 없습니다.");
+			throw new CinemaException(CinemaErrorCode.NAME_HAS_LENGTH_UNDER_50);
 		}
 		if (location.length() > 200) {
-			throw new IllegalArgumentException("극장 주소는 200글자를 넘을 수 없습니다.");
+			throw new CinemaException(CinemaErrorCode.LOCATION_HAS_LENGTH_UNDER_200);
 		}
 	}
 }
