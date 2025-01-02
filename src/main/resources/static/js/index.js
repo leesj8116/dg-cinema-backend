@@ -84,7 +84,7 @@ const changePage = async (pageNo = 0) => {
             document.getElementById('nav-main').onclick = () => changePage(0);
             document.getElementById('nav-my-reservation').classList.add('selected');
 
-            checkMyReservation();
+            await checkMyReservation();
 
             break;
     }
@@ -216,7 +216,7 @@ const uploadRunningTimetable = (runningTimes) => {
             // @TODO: 이게 맞나 싶은 데이터 전달
             searchSpan.setAttribute('onclick',
                 `reservationCheckSeat('${runningTime.runningTimeId}', '${runningTime.movie.title}',
-                '${dateString}', ${runningTime.screenRoom.cinemaId}, '${runningTime.screenRoom.screenNumber}')`);
+                '${dateString}', '${runningTime.screenRoom.cinemaId}', '${runningTime.screenRoom.screenNumber}')`);
         }
         actionCell.appendChild(searchSpan);
 
@@ -323,13 +323,15 @@ const passByMovieTitle = (movieName) => {
     document.getElementById('search-movie-title-btn').focus();
 };
 
-const reservationCheckSeat = async (runningTimeId, title, startTime, cinema, screenNumber) => {
+const reservationCheckSeat = async (runningTimeId, title, startTime, cinemaStr, screenNumber) => {
     // 극장 정보 조회
     const cinemas = JSON.parse(localStorage.getItem('cinemas'));
+    const cinemaIdx = Number(cinemaStr);
+
 
     document.getElementById('reservation-task-what').innerText = title;
     document.getElementById('reservation-task-when').innerText = startTime;
-    document.getElementById('reservation-task-where-cinema').innerText = `${cinemas[cinema].name} (${cinemas[cinema].location})`;
+    document.getElementById('reservation-task-where-cinema').innerText = `${cinemas[cinemaIdx].name} (${cinemas[cinemaIdx].location})`;
     document.getElementById('reservation-task-where-screen').innerText = `${screenNumber}관`;
     document.getElementById('reservation-running-time-id').value = runningTimeId;
 
@@ -447,7 +449,14 @@ const makeReservation = async () => {
 const checkMyReservation = async () => {
     const userId = Number(localStorage.getItem('userId'));
 
-    await getMyReservationApi(userId);
+    await getMyReservationApi(userId)
+        .then((json) => {
+            console.log('나의 예약 확인', json);
+        }).catch((error) => {
+            console.error(error);
+            alert('예약 목록 조회를 실패했습니다. 잠시 후 다시 시도해주세요.');
+        });
+    ;
 }
 
 const loginCheck = () => {
