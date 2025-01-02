@@ -265,17 +265,17 @@ const loginEvent = () => {
             localStorage.setItem('userId', '1');
             localStorage.setItem('nickname', '운영자');
             break;
-        case 'user':
-            localStorage.setItem('userId', '2');
-            localStorage.setItem('nickname', '사용자');
-            break;
         case 'Pcloud63514@gmail.com':
-            localStorage.setItem('userId', '3');
+            localStorage.setItem('userId', '2');
             localStorage.setItem('nickname', '권태헌');
             break;
         case 'leesj8115@gmail.com':
-            localStorage.setItem('userId', '4');
+            localStorage.setItem('userId', '3');
             localStorage.setItem('nickname', '이승주');
+            break;
+        case 'user':
+            localStorage.setItem('userId', '4');
+            localStorage.setItem('nickname', '사용자');
             break;
         default:
             localStorage.setItem('userId', '5');
