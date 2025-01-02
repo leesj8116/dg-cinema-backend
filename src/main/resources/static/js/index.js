@@ -152,30 +152,8 @@ const uploadRunningTimetable = (runningTimes) => {
 
     // 새로운 상영시간 데이터 추가
     runningTimes.forEach(runningTime => {
-        //// 상영 시간 계산
         const date = new Date(runningTime.startTime);
-
-        const dateString = date.toLocaleString('ko-KR', {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit',
-            hour12: false // 24시간 형식으로
-        });
-
-        // 날짜와 시간을 분리
-        const datePart = dateString.substring(0, 14);
-        const timePart = dateString.substring(14);
-
-        // 날짜 부분을 '년 월 일' 형식으로 변환
-        const [year, month, day] = datePart.split('.').map(part => part.trim());
-        const formattedDate = `${year}년 ${month}월 ${day}일`;
-
-        // 시간 부분을 '시 분' 형식으로 변환
-        const [hour, minute] = timePart.split(':');
-        const formattedTime = `${hour}시 ${minute}분`;
+        const {formattedDate, formattedTime} = dateStringSplit(runningTime.startTime);
 
         const row = document.createElement('tr');
         row.className = 'running-time';
@@ -216,7 +194,7 @@ const uploadRunningTimetable = (runningTimes) => {
             // @TODO: 이게 맞나 싶은 데이터 전달
             searchSpan.setAttribute('onclick',
                 `reservationCheckSeat('${runningTime.runningTimeId}', '${runningTime.movie.title}',
-                '${dateString}', '${runningTime.screenRoom.cinemaId}', '${runningTime.screenRoom.screenNumber}')`);
+                '${formattedDate} ${formattedTime}', '${runningTime.screenRoom.cinemaId}', '${runningTime.screenRoom.screenNumber}')`);
         }
         actionCell.appendChild(searchSpan);
 
@@ -449,11 +427,53 @@ const makeReservation = async () => {
 const checkMyReservation = async () => {
     const userId = Number(localStorage.getItem('userId'));
     const cinemas = JSON.parse(localStorage.getItem('cinemas'));
+    const reservationTable = document.getElementById('my-reservation-table');
 
     await getMyReservationApi(userId)
         .then((list) => {
             console.log('나의 예약 확인', list);
-            
+
+            // 기존 데이터 삭제
+            const existingRows = reservationTable.querySelectorAll('#my-reservation-table tr:not(:first-child)');
+            existingRows.forEach(row => row.remove());
+
+            list.forEach(reservation => {
+                const row = document.createElement('tr');
+
+                const cinemaName = document.createElement('td');
+                cinemaName.textContent = cinemas[reservation.cinemaId].name
+
+                const screenRoom = document.createElement('td');
+                screenRoom.textContent = `${reservation.screenNumber}관`;
+
+                const {formattedDate, formattedTime} = dateStringSplit(reservation.startTime)
+
+                const startDate = document.createElement('td');
+                startDate.textContent = formattedDate;
+
+                const startTime = document.createElement('td');
+                startTime.textContent = formattedTime;
+
+                const movieTitle = document.createElement('td');
+                movieTitle.textContent = reservation.movieTitle;
+
+                const seatNo = document.createElement('td');
+                seatNo.textContent = reservation.seatNo;
+
+                const status = document.createElement('td');
+                status.textContent = reservation.status;
+
+                row.appendChild(cinemaName);
+                row.appendChild(screenRoom);
+                row.appendChild(startDate);
+                row.appendChild(startTime);
+                row.appendChild(movieTitle);
+                row.appendChild(seatNo);
+                row.appendChild(status);
+
+                reservationTable.appendChild(row);
+            });
+
 
         }).catch((error) => {
             console.error(error);
@@ -470,4 +490,38 @@ const loginCheck = () => {
     }
 
     return false;
+}
+
+/**
+ * 스트링 형태의 시간 값을 날짜와 시간으로 분리하여 반환한다.
+ * @param strDate "YYYY-MM-DDThh:mm:ss" 형식의 스트링
+ * @returns {{formattedDate: string, formattedTime: string}} "YYYY년 MM월 DD일", "mm시 ss분"
+ */
+const dateStringSplit = (strDate = '') => {
+    //// 상영 시간 계산
+    const date = new Date(strDate);
+
+    const dateString = date.toLocaleString('ko-KR', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false // 24시간 형식으로
+    });
+
+    // 날짜와 시간을 분리
+    const datePart = dateString.substring(0, 14);
+    const timePart = dateString.substring(14);
+
+    // 날짜 부분을 '년 월 일' 형식으로 변환
+    const [year, month, day] = datePart.split('.').map(part => part.trim());
+    const formattedDate = `${year}년 ${month}월 ${day}일`;
+
+    // 시간 부분을 '시 분' 형식으로 변환
+    const [hour, minute] = timePart.split(':');
+    const formattedTime = `${hour}시 ${minute}분`;
+
+    return {formattedDate, formattedTime};
 }
