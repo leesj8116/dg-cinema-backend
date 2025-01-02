@@ -216,7 +216,7 @@ const uploadRunningTimetable = (runningTimes) => {
             // @TODO: 이게 맞나 싶은 데이터 전달
             searchSpan.setAttribute('onclick',
                 `reservationCheckSeat('${runningTime.runningTimeId}', '${runningTime.movie.title}',
-                '${dateString}', '${runningTime.screenRoom.cinemaId}', '${runningTime.screenRoom.screenNumber}')`);
+                '${dateString}', ${runningTime.screenRoom.cinemaId}, '${runningTime.screenRoom.screenNumber}')`);
         }
         actionCell.appendChild(searchSpan);
 
