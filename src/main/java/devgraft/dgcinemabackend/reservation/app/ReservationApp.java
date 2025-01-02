@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import devgraft.dgcinemabackend.common.exception.CommonErrorCode;
 import devgraft.dgcinemabackend.reservation.domain.CinemaFinder;
 import devgraft.dgcinemabackend.reservation.domain.DgUserFinder;
-import devgraft.dgcinemabackend.reservation.domain.Payment;
 import devgraft.dgcinemabackend.reservation.domain.PaymentRepository;
 import devgraft.dgcinemabackend.reservation.domain.Reservation;
 import devgraft.dgcinemabackend.reservation.domain.ReservationContext;
@@ -66,13 +65,6 @@ public class ReservationApp implements ReservationUseCase {
 			.user(user)
 			.runningTime(runningTime)
 			.seatNo(context.seatNo())
-			.build());
-
-		// 5. 결제 생성
-		final Payment payment = paymentRepository.save(Payment.builder()
-			.amount(10000)  // 한 장 당 10000원 단일
-			.reservation(reservation)
-			.result(Boolean.FALSE)
 			.build());
 
 		return ReservationResult.from(reservation);
