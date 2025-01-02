@@ -463,6 +463,33 @@ const checkMyReservation = async () => {
                 const status = document.createElement('td');
                 status.textContent = reservation.status;
 
+                const action = document.createElement('td');
+                const actionText = document.createElement('span');
+                action.appendChild(actionText);
+                // @TODO: 서버에서 전달하는 메세지 값을 기준으로 분기 처리하는 게 마음에 들지 않음
+                switch (reservation.status) {
+                    case '결제 대기':
+                        actionText.classList.add('payment');
+                        actionText.textContent = '결제';
+                        actionText.onclick = () => {
+                            alert('결제 실행');
+                        }
+                        break;
+                    case '결제 완료':
+                        actionText.classList.add('ticket');
+                        actionText.textContent = '티켓 확인';
+                        actionText.onclick = () => {
+                            alert('티켓 확인');
+                        }
+                        break;
+                    case '예약 취소':
+                        // 필요시 추가
+                        break;
+                    case '예약 만료':
+                        // 필요시 추가
+                        break;
+                }
+
                 row.appendChild(cinemaName);
                 row.appendChild(screenRoom);
                 row.appendChild(startDate);
@@ -470,6 +497,8 @@ const checkMyReservation = async () => {
                 row.appendChild(movieTitle);
                 row.appendChild(seatNo);
                 row.appendChild(status);
+                row.appendChild(action);
+
 
                 reservationTable.appendChild(row);
             });
