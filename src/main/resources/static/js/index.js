@@ -441,24 +441,29 @@ const checkMyReservation = async () => {
                 const row = document.createElement('tr');
 
                 const cinemaName = document.createElement('td');
-                cinemaName.textContent = cinemas[reservation.cinemaId].name
+                cinemaName.textContent = cinemas[Number(reservation.cinemaId)].name
 
                 const screenRoom = document.createElement('td');
                 screenRoom.textContent = `${reservation.screenNumber}관`;
 
-                const {formattedDate, formattedTime} = dateStringSplit(reservation.startTime)
+                const startAt = dateStringSplit(reservation.startTime)
 
                 const startDate = document.createElement('td');
-                startDate.textContent = formattedDate;
+                startDate.textContent = startAt.formattedDate;
 
                 const startTime = document.createElement('td');
-                startTime.textContent = formattedTime;
+                startTime.textContent = startAt.formattedTime;
 
                 const movieTitle = document.createElement('td');
                 movieTitle.textContent = reservation.movieTitle;
 
                 const seatNo = document.createElement('td');
                 seatNo.textContent = reservation.seatNo;
+
+                const created = document.createElement('td');
+
+                const createdDate = dateStringSplit(reservation.createdDate);
+                created.textContent = `${createdDate.formattedDate} ${createdDate.formattedTime}`;
 
                 const status = document.createElement('td');
                 status.textContent = reservation.status;
@@ -496,6 +501,7 @@ const checkMyReservation = async () => {
                 row.appendChild(startTime);
                 row.appendChild(movieTitle);
                 row.appendChild(seatNo);
+                row.appendChild(created);
                 row.appendChild(status);
                 row.appendChild(action);
 
@@ -526,7 +532,12 @@ const loginCheck = () => {
  * @param strDate "YYYY-MM-DDThh:mm:ss" 형식의 스트링
  * @returns {{formattedDate: string, formattedTime: string}} "YYYY년 MM월 DD일", "mm시 ss분"
  */
-const dateStringSplit = (strDate = '') => {
+const dateStringSplit = (input = '') => {
+    const strDate = (input.indexOf('.') !== -1) ? input.split('.')[0] : input;
+
+    console.log('input', input);
+    console.log('strDate', strDate);
+
     //// 상영 시간 계산
     const date = new Date(strDate);
 

@@ -10,7 +10,8 @@ public record ReservationResult(
 	Long cinemaId,              // 극장 아이디
 	Long screenNumber,          // 상영관 번호
 	String seatNo,              // 좌석 번호
-	String status               // 결제 상태
+	String status,              // 결제 상태
+	LocalDateTime createdDate   // 예약 생성 시간
 ) {
 	public static ReservationResult from(Reservation reservation) {
 		return new ReservationResult(
@@ -21,7 +22,8 @@ public record ReservationResult(
 			reservation.getRunningTime().getScreenRoom().getCinemaId(),
 			reservation.getRunningTime().getScreenRoom().getScreenNumber(),
 			reservation.getSeatNo(),
-			reservation.getStatus().getDescription()
+			reservation.getStatus().getDescription(),
+			reservation.getCreatedDate()
 		);
 	}
 }
