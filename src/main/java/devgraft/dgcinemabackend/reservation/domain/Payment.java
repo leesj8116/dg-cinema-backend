@@ -33,7 +33,7 @@ public class Payment extends BaseEntity {
 	@Builder.Default
 	private Boolean result = Boolean.FALSE;     // 결제 상태
 
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "reservation_id")
 	private Reservation reservation;            // 예약 정보
 }
