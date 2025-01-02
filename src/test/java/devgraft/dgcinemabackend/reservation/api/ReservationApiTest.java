@@ -185,7 +185,6 @@ class ReservationApiTest {
 		final ArgumentCaptor<Payment> paymentCaptor = ArgumentCaptor.forClass(Payment.class);
 
 		Mockito.when(dgUserFinder.findById(Mockito.anyLong())).thenReturn(Optional.of(reservation.getUser()));
-		Mockito.when(cinemaFinder.findById(Mockito.anyLong())).thenReturn(Optional.of(anCinema().build()));
 		Mockito.when(runningTimeFinder.findById(Mockito.anyLong())).thenReturn(Optional.of(anRunningTime().build()));
 		Mockito.when(reservationRepository.save(Mockito.any())).thenReturn(reservation);
 		Mockito.when(paymentRepository.save(Mockito.any())).thenReturn(anPayment().reservation(reservation).build());
