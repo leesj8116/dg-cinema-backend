@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import devgraft.dgcinemabackend.reservation.app.ReservationApp;
+import devgraft.dgcinemabackend.reservation.domain.GetMyReservationRequest;
 import devgraft.dgcinemabackend.reservation.domain.ReservationContext;
 import devgraft.dgcinemabackend.reservation.domain.ReservationResult;
 
@@ -40,7 +41,7 @@ public class ReservationApi {
 	}
 
 	@PostMapping("/reservation/my")
-	public List<ReservationResult> getUserReservation(@RequestParam(name = "userId") Long userId) {
-		return reservationApp.getUserReservations(userId);
+	public List<ReservationResult> getUserReservations(@RequestBody GetMyReservationRequest request) {
+		return reservationApp.getUserReservations(request.userId());
 	}
 }

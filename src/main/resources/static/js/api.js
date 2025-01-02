@@ -53,6 +53,14 @@ const registerReservationApi = async (userId, runningTimeId, seatNo) => {
 /**
  * 나의 예약 목록을 조회한다.
  */
-const getMyReservationApi = async () => {
-
+const getMyReservationApi = async (userId = -1) => {
+    return await fetch(`/reservation/my`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json;charset=UTF-8'
+        },
+        body: JSON.stringify({
+            userId
+        })
+    }).then((response) => response.json());
 }

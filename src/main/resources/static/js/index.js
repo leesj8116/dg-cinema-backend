@@ -444,13 +444,10 @@ const makeReservation = async () => {
         });
 };
 
-const checkMyReservation = () => {
-
-
+const checkMyReservation = async () => {
     const userId = Number(localStorage.getItem('userId'));
-    console.log('userId', userId);
 
-    // @TODO: 예약 정보 가져오기 API 구현 및 연계
+    await getMyReservationApi(userId);
 }
 
 const loginCheck = () => {

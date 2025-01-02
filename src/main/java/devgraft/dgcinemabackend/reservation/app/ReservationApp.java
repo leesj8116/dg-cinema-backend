@@ -92,6 +92,10 @@ public class ReservationApp implements ReservationUseCase {
 	}
 
 	public List<ReservationResult> getUserReservations(final Long userId) {
+		DgUser user = dgUserFinder.findById(userId).orElseThrow(
+			() -> new IllegalArgumentException(ReservationExceptionMessage.USER_NOT_FOUND.getMessage())
+		);
+
 		return null;
 	}
 }

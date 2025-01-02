@@ -214,12 +214,18 @@ class ReservationApiTest {
 	void get_user_reservation_should_throw_exception_when_user_not_found() {
 		// given
 		Mockito.when(dgUserFinder.findById(Mockito.anyLong())).thenReturn(Optional.empty());
+		Mockito.when(dgUserFinder.findById(Mockito.isNull())).thenThrow(IllegalArgumentException.class);
 
 		// when
 		final IllegalArgumentException exception = Assertions.catchThrowableOfType(
-			IllegalArgumentException.class, () -> reservationApp.getUserReservations(1L));
+			IllegalArgumentException.class, () -> reservationApp.getUserReservations(null));
 
 		Assertions.assertThat(exception).isNotNull();
-		Assertions.assertThat(exception.getMessage()).isEqualTo(ReservationExceptionMessage.USER_NOT_FOUND.getMessage());
+
+		final IllegalArgumentException exception2 = Assertions.catchThrowableOfType(
+			IllegalArgumentException.class, () -> reservationApp.getUserReservations(1L));
+
+		Assertions.assertThat(exception2).isNotNull();
+		Assertions.assertThat(exception2.getMessage()).isEqualTo(ReservationExceptionMessage.USER_NOT_FOUND.getMessage());
 	}
 }
