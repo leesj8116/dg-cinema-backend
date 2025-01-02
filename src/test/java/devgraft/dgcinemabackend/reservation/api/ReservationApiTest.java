@@ -16,6 +16,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import devgraft.dgcinemabackend.common.exception.CommonErrorCode;
 import devgraft.dgcinemabackend.reservation.app.ReservationApp;
 import devgraft.dgcinemabackend.reservation.domain.CinemaFinder;
 import devgraft.dgcinemabackend.reservation.domain.DgUserFinder;
@@ -23,10 +24,11 @@ import devgraft.dgcinemabackend.reservation.domain.Payment;
 import devgraft.dgcinemabackend.reservation.domain.PaymentRepository;
 import devgraft.dgcinemabackend.reservation.domain.Reservation;
 import devgraft.dgcinemabackend.reservation.domain.ReservationContext;
-import devgraft.dgcinemabackend.reservation.domain.ReservationExceptionMessage;
+import devgraft.dgcinemabackend.reservation.domain.ReservationErrorCode;
 import devgraft.dgcinemabackend.reservation.domain.ReservationRepository;
 import devgraft.dgcinemabackend.reservation.domain.ReservationResult;
 import devgraft.dgcinemabackend.reservation.domain.RunningTimeFinder;
+import devgraft.dgcinemabackend.reservation.exception.ReservationException;
 
 @ExtendWith(MockitoExtension.class)
 class ReservationApiTest {
@@ -69,16 +71,16 @@ class ReservationApiTest {
 		Mockito.when(runningTimeFinder.findById(Mockito.anyLong())).thenReturn(Optional.empty());
 
 		// when
-		final IllegalArgumentException exception = Assertions.catchThrowableOfType(
-			IllegalArgumentException.class, () -> reservationApp.seatCheck(runningTimeId));
+		final ReservationException exception = Assertions.catchThrowableOfType(
+			ReservationException.class, () -> reservationApp.seatCheck(runningTimeId));
 
 		// then
 		ArgumentCaptor<Long> runningTimeIdCaptor = ArgumentCaptor.forClass(Long.class);
 		Mockito.verify(runningTimeFinder, Mockito.times(1)).findById(runningTimeIdCaptor.capture());
 
 		Assertions.assertThat(exception).isNotNull();
-		Assertions.assertThat(exception.getMessage())
-			.isEqualTo(ReservationExceptionMessage.RUNNING_TIME_NOT_FOUND.getMessage());
+		Assertions.assertThat(exception.getErrorCode())
+			.isEqualTo(ReservationErrorCode.RUNNING_TIME_NOT_FOUND);
 		Assertions.assertThat(runningTimeIdCaptor.getValue()).isEqualTo(runningTimeId);
 	}
 
@@ -98,8 +100,8 @@ class ReservationApiTest {
 		Mockito.when(dgUserFinder.findById(Mockito.anyLong())).thenReturn(Optional.empty());
 
 		// when
-		final IllegalArgumentException exception = Assertions.catchThrowableOfType(
-			IllegalArgumentException.class, () -> reservationApp.register(givenContext));
+		final ReservationException exception = Assertions.catchThrowableOfType(
+			ReservationException.class, () -> reservationApp.register(givenContext));
 
 		ArgumentCaptor<Long> userIdCaptor = ArgumentCaptor.forClass(Long.class);
 		// verify(dgUserRepository, Mockito.times(1)) : findById를 몇 번 콜했는지 체크 하는 횟수.
@@ -108,8 +110,8 @@ class ReservationApiTest {
 
 		// then
 		Assertions.assertThat(exception).isNotNull();
-		Assertions.assertThat(exception.getMessage())
-			.isEqualTo(ReservationExceptionMessage.USER_NOT_FOUND.getMessage());
+		Assertions.assertThat(exception.getErrorCode())
+			.isEqualTo(ReservationErrorCode.USER_NOT_FOUND);
 		Assertions.assertThat(userIdCaptor.getValue()).isEqualTo(givenContext.userId());
 	}
 
@@ -126,8 +128,8 @@ class ReservationApiTest {
 			reservation.getSeatNo());
 
 		// when
-		final IllegalArgumentException exception = Assertions.catchThrowableOfType(
-			IllegalArgumentException.class, () -> reservationApp.register(reservationContext));
+		final ReservationException exception = Assertions.catchThrowableOfType(
+			ReservationException.class, () -> reservationApp.register(reservationContext));
 
 		ArgumentCaptor<Long> runningTimeCaptor = ArgumentCaptor.forClass(Long.class);
 		// 꼭 위의 방법대로 할 필요 없이, @Captor 어노테이션으로 할 수 있음
@@ -135,8 +137,8 @@ class ReservationApiTest {
 
 		// then
 		Assertions.assertThat(exception).isNotNull();
-		Assertions.assertThat(exception.getMessage())
-			.isEqualTo(ReservationExceptionMessage.RUNNING_TIME_NOT_FOUND.getMessage());
+		Assertions.assertThat(exception.getErrorCode())
+			.isEqualTo(ReservationErrorCode.RUNNING_TIME_NOT_FOUND);
 		Assertions.assertThat(runningTimeCaptor.getValue()).isEqualTo(dummyReservationId);
 	}
 
@@ -157,13 +159,13 @@ class ReservationApiTest {
 		Mockito.when(reservationRepository.findSeatNoByRunningTime(Mockito.any())).thenReturn(List.of("A1", "A2"));
 
 		// when
-		final IllegalArgumentException exception = Assertions.catchThrowableOfType(
-			IllegalArgumentException.class, () -> reservationApp.register(reservationContext));
+		final ReservationException exception = Assertions.catchThrowableOfType(
+			ReservationException.class, () -> reservationApp.register(reservationContext));
 
 		// then
 		Assertions.assertThat(exception).isNotNull();
-		Assertions.assertThat(exception.getMessage())
-			.isEqualTo(ReservationExceptionMessage.ALREADY_SEAT_NO_HAS_RESERVED.getMessage());
+		Assertions.assertThat(exception.getErrorCode())
+			.isEqualTo(ReservationErrorCode.ALREADY_SEAT_NO_HAS_RESERVED);
 	}
 
 	@Test
@@ -213,19 +215,20 @@ class ReservationApiTest {
 	@DisplayName("예약 확인 기능은 유효한 사용자만 사용 가능하다")
 	void get_user_reservation_should_throw_exception_when_user_not_found() {
 		// given
-		Mockito.when(dgUserFinder.findById(Mockito.anyLong())).thenReturn(Optional.empty());
-		Mockito.when(dgUserFinder.findById(Mockito.isNull())).thenThrow(IllegalArgumentException.class);
+		Mockito.lenient().when(dgUserFinder.findById(Mockito.anyLong())).thenReturn(Optional.empty());
+		Mockito.lenient().when(dgUserFinder.findById(Mockito.isNull())).thenThrow(ReservationException.class);
 
 		// when
-		final IllegalArgumentException exception = Assertions.catchThrowableOfType(
-			IllegalArgumentException.class, () -> reservationApp.getUserReservations(null));
+		final ReservationException exception = Assertions.catchThrowableOfType(
+			ReservationException.class, () -> reservationApp.getUserReservations(null));
 
 		Assertions.assertThat(exception).isNotNull();
+		Assertions.assertThat(exception.getErrorCode()).isEqualTo(CommonErrorCode.INVALID_PARAMETER);
 
-		final IllegalArgumentException exception2 = Assertions.catchThrowableOfType(
-			IllegalArgumentException.class, () -> reservationApp.getUserReservations(1L));
+		final ReservationException exception2 = Assertions.catchThrowableOfType(
+			ReservationException.class, () -> reservationApp.getUserReservations(1L));
 
 		Assertions.assertThat(exception2).isNotNull();
-		Assertions.assertThat(exception2.getMessage()).isEqualTo(ReservationExceptionMessage.USER_NOT_FOUND.getMessage());
+		Assertions.assertThat(exception2.getErrorCode()).isEqualTo(ReservationErrorCode.USER_NOT_FOUND);
 	}
 }

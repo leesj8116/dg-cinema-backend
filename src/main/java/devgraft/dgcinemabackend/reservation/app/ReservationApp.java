@@ -5,16 +5,18 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import devgraft.dgcinemabackend.cinema.domain.Cinema;
+import devgraft.dgcinemabackend.common.exception.CommonErrorCode;
 import devgraft.dgcinemabackend.reservation.domain.CinemaFinder;
 import devgraft.dgcinemabackend.reservation.domain.DgUserFinder;
 import devgraft.dgcinemabackend.reservation.domain.Payment;
 import devgraft.dgcinemabackend.reservation.domain.PaymentRepository;
 import devgraft.dgcinemabackend.reservation.domain.Reservation;
 import devgraft.dgcinemabackend.reservation.domain.ReservationContext;
-import devgraft.dgcinemabackend.reservation.domain.ReservationExceptionMessage;
+import devgraft.dgcinemabackend.reservation.domain.ReservationErrorCode;
 import devgraft.dgcinemabackend.reservation.domain.ReservationRepository;
 import devgraft.dgcinemabackend.reservation.domain.ReservationResult;
 import devgraft.dgcinemabackend.reservation.domain.RunningTimeFinder;
+import devgraft.dgcinemabackend.reservation.exception.ReservationException;
 import devgraft.dgcinemabackend.runningtime.domain.RunningTime;
 import devgraft.dgcinemabackend.user.domain.DgUser;
 import jakarta.transaction.Transactional;
@@ -46,7 +48,7 @@ public class ReservationApp implements ReservationUseCase {
 
 		// 1. 유저 검사
 		final DgUser user = dgUserFinder.findById(context.userId())
-			.orElseThrow(() -> new IllegalArgumentException(ReservationExceptionMessage.USER_NOT_FOUND.getMessage()));
+			.orElseThrow(() -> new ReservationException(ReservationErrorCode.USER_NOT_FOUND));
 
 		// 2. 상영 시간 검사
 		final RunningTime runningTime = getRunningTime(context.runningTimeId());
@@ -57,8 +59,7 @@ public class ReservationApp implements ReservationUseCase {
 			.filter(seatNo -> seatNo.equals(context.seatNo()))
 			.findAny()
 			.ifPresent(dummy -> {
-				throw new IllegalArgumentException(
-					ReservationExceptionMessage.ALREADY_SEAT_NO_HAS_RESERVED.getMessage());
+				throw new ReservationException(ReservationErrorCode.ALREADY_SEAT_NO_HAS_RESERVED);
 			});
 
 		// 4. 예약 처리
@@ -70,7 +71,8 @@ public class ReservationApp implements ReservationUseCase {
 
 		// 5. 극장 조회 (검증 X, 결과 반환 위해 사용)
 		final Cinema cinema = cinemaFinder.findById(runningTime.getScreenRoom().getCinemaId()).orElseThrow(
-			() -> new IllegalArgumentException(ReservationExceptionMessage.CINEMA_NOT_FOUND.getMessage()));
+			() -> new ReservationException(ReservationErrorCode.CINEMA_NOT_FOUND)
+		);
 
 		// 6. 결제 생성
 		final Payment payment = paymentRepository.save(Payment.builder()
@@ -87,13 +89,17 @@ public class ReservationApp implements ReservationUseCase {
 
 	protected RunningTime getRunningTime(final Long runningTimeId) {
 		return runningTimeFinder.findById(runningTimeId).orElseThrow(
-			() -> new IllegalArgumentException(ReservationExceptionMessage.RUNNING_TIME_NOT_FOUND.getMessage())
+			() -> new ReservationException(ReservationErrorCode.RUNNING_TIME_NOT_FOUND)
 		);
 	}
 
 	public List<ReservationResult> getUserReservations(final Long userId) {
+		if (userId == null) {
+			throw new ReservationException(CommonErrorCode.INVALID_PARAMETER);
+		}
+
 		DgUser user = dgUserFinder.findById(userId).orElseThrow(
-			() -> new IllegalArgumentException(ReservationExceptionMessage.USER_NOT_FOUND.getMessage())
+			() -> new ReservationException(ReservationErrorCode.USER_NOT_FOUND)
 		);
 
 		return null;
