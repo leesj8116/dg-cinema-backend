@@ -36,7 +36,7 @@ erDiagram
         Long user_id FK "사용자_엔티티"
         Long running_time_id FK "상영시간_아이디"
         String seet_no "좌석번호"
-        Enum status "예약 상태 (결제 대기, 완료, 취소)"
+        Enum status "예약 상태 (대기, 완료, 취소, 만료)"
     }
 
     "RunningTime(상영시간)" {
@@ -51,7 +51,8 @@ erDiagram
         Long payment_id PK "결제_아이디"
         Long reservation_id FK "예약_아이디"
         Integer amount "금액"
-        Boolean result "결과(성공, 실패)"
+        Enum type "구분 (구매, 환불)"
+        Boolean success "결과(성공, 실패)"
     }
 
     "Movie(영화)" ||--o{ "RunningTime(상영시간)": "영화는 0 ~ n 회 상영한다"

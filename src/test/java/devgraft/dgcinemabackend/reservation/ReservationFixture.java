@@ -7,6 +7,7 @@ import devgraft.dgcinemabackend.cinema.domain.Cinema;
 import devgraft.dgcinemabackend.cinema.domain.ScreenRoom;
 import devgraft.dgcinemabackend.movie.domain.Movie;
 import devgraft.dgcinemabackend.reservation.domain.Payment;
+import devgraft.dgcinemabackend.reservation.domain.PaymentType;
 import devgraft.dgcinemabackend.reservation.domain.Reservation;
 import devgraft.dgcinemabackend.runningtime.domain.RunningTime;
 import devgraft.dgcinemabackend.user.domain.DgUser;
@@ -57,7 +58,8 @@ public class ReservationFixture {
 		return Payment.builder()
 			.paymentId(1L)
 			.amount(10000)
-			.reservation(anReservation().build())
-			.result(Boolean.FALSE);
+			.type(PaymentType.PURCHASE)
+			.success(Boolean.TRUE)
+			.reservation(anReservation().build());
 	}
 }
