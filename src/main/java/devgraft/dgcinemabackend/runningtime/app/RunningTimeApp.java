@@ -23,9 +23,14 @@ class RunningTimeApp implements RunningTimeUseCase {
 	 * @param movieTitle
 	 * @return
 	 */
-	public List<RunningTime> getRunningTimesByMovieTitle(final String movieTitle) {
+	public List<RunningTimeResult> getRunningTimesByMovieTitle(final String movieTitle) {
 		List<Movie> movies = movieFinder.findMoviesByMovieTitle(movieTitle);
 
-		return runningTimeRepository.findAllByStartTimeGreaterThanEqualAndMovieIn(LocalDateTime.now(), movies);
+		List<RunningTime> runningTimes = runningTimeRepository.findAllByStartTimeGreaterThanEqualAndMovieIn(
+			LocalDateTime.now(), movies);
+
+		return runningTimes.stream()
+			.map(runningTime -> RunningTimeResult.from(runningTime))
+			.toList();
 	}
 }

@@ -160,17 +160,17 @@ const uploadRunningTimetable = (runningTimes) => {
 
         // 제목
         const titleCell = document.createElement('td');
-        titleCell.textContent = runningTime.movie.title;
+        titleCell.textContent = runningTime.movieTitle;
 
         // 극장
         const cinemaCell = document.createElement('td');
         // 극장 id => 이름으로 변경하여 표시
-        cinemaCell.textContent = cinemas[runningTime.screenRoom.cinemaId].name;
+        cinemaCell.textContent = cinemas[runningTime.cinemaId].name;
 
 
         // 상영관
         const screenRoomCell = document.createElement('td');
-        screenRoomCell.textContent = `${runningTime.screenRoom.screenNumber}관`;
+        screenRoomCell.textContent = `${runningTime.screenNumber}관`;
 
         // 상영일
         const startDateCell = document.createElement('td');
@@ -193,8 +193,8 @@ const uploadRunningTimetable = (runningTimes) => {
             // 아직 상영 전이라면 좌석 확인으로 안내
             // @TODO: 이게 맞나 싶은 데이터 전달
             searchSpan.setAttribute('onclick',
-                `reservationCheckSeat('${runningTime.runningTimeId}', '${runningTime.movie.title}',
-                '${formattedDate} ${formattedTime}', '${runningTime.screenRoom.cinemaId}', '${runningTime.screenRoom.screenNumber}')`);
+                `reservationCheckSeat('${runningTime.runningTimeId}', '${runningTime.movieTitle}',
+                '${formattedDate} ${formattedTime}', '${runningTime.cinemaId}', '${runningTime.screenNumber}')`);
         }
         actionCell.appendChild(searchSpan);
 
@@ -481,7 +481,7 @@ const checkMyReservation = async () => {
                 }
 
                 const actionMain = document.createElement('span');  // 예약 상황에 따라 기능이 달라짐
-                
+
                 switch (reservation.status) {
                     case 'PENDING':
                         actionMain.classList.add('payment');

@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import devgraft.dgcinemabackend.runningtime.app.RunningTimeResult;
 import devgraft.dgcinemabackend.runningtime.app.RunningTimeUseCase;
-import devgraft.dgcinemabackend.runningtime.domain.RunningTime;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -21,7 +21,7 @@ class RunningTimeApi {
 	 * @return
 	 */
 	@GetMapping("/running-time")
-	public List<RunningTime> getRunningTimesByMovieTitle(@RequestParam(name = "title") String title) {
+	public List<RunningTimeResult> getRunningTimesByMovieTitle(@RequestParam(name = "title") String title) {
 		return runningTimeUseCase.getRunningTimesByMovieTitle(title);
 	}
 }

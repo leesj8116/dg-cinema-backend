@@ -7,16 +7,14 @@ import org.springframework.stereotype.Component;
 import devgraft.dgcinemabackend.movie.domain.Movie;
 import devgraft.dgcinemabackend.movie.domain.MovieRepository;
 import devgraft.dgcinemabackend.runningtime.domain.MovieFinder;
+import lombok.RequiredArgsConstructor;
 
 @Component
+@RequiredArgsConstructor
 class MovieFinderImpl implements MovieFinder {
 	private final MovieRepository movieRepository;
 
-	public MovieFinderImpl(MovieRepository movieRepository) {
-		this.movieRepository = movieRepository;
-	}
-
-	public List<Movie> findMoviesByMovieTitle(String title) {
+	public List<Movie> findMoviesByMovieTitle(final String title) {
 		return movieRepository.findAllByTitleContainingOrderByReleaseDateAsc(title);
 	}
 }
