@@ -1,14 +1,9 @@
 package devgraft.dgcinemabackend.reservation;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
-import devgraft.dgcinemabackend.cinema.domain.Cinema;
 import devgraft.dgcinemabackend.cinema.domain.ScreenRoom;
 import devgraft.dgcinemabackend.movie.domain.Movie;
-import devgraft.dgcinemabackend.reservation.domain.Payment;
-import devgraft.dgcinemabackend.reservation.domain.PaymentType;
-import devgraft.dgcinemabackend.reservation.domain.Reservation;
 import devgraft.dgcinemabackend.runningtime.domain.RunningTime;
 import devgraft.dgcinemabackend.user.domain.DgUser;
 
@@ -27,24 +22,10 @@ public class ReservationFixture {
 			.startTime(LocalDateTime.now());
 	}
 
-	public static Reservation.ReservationBuilder anReservation() {
-		return Reservation.builder()
-			.reservationId(1L)
-			.user(anDgUser().build())
-			.runningTime(anRunningTime().build())
-			.seatNo("A1");
-	}
-
 	public static ScreenRoom.ScreenRoomBuilder anScreenRoom() {
 		return ScreenRoom.builder()
 			.cinemaId(1L)
 			.screenNumber(1L);
-	}
-
-	public static Cinema.CinemaBuilder anCinema() {
-		return Cinema.builder()
-			.cinemaId(1L)
-			.screenRoomList(List.of(anScreenRoom().build()));
 	}
 
 	public static Movie.MovieBuilder anMovie() {
@@ -52,14 +33,5 @@ public class ReservationFixture {
 			.movieId(1L)
 			.title("제목")
 			.director("감독");
-	}
-
-	public static Payment.PaymentBuilder anPayment() {
-		return Payment.builder()
-			.paymentId(1L)
-			.amount(10000)
-			.type(PaymentType.PURCHASE)
-			.success(Boolean.TRUE)
-			.reservation(anReservation().build());
 	}
 }

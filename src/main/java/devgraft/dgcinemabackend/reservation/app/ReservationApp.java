@@ -4,17 +4,15 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import devgraft.dgcinemabackend.common.exception.CommonErrorCode;
-import devgraft.dgcinemabackend.reservation.domain.CinemaFinder;
 import devgraft.dgcinemabackend.reservation.domain.DgUserFinder;
-import devgraft.dgcinemabackend.reservation.domain.PaymentRepository;
+import devgraft.dgcinemabackend.reservation.domain.GetMyReservationRequest;
 import devgraft.dgcinemabackend.reservation.domain.Reservation;
 import devgraft.dgcinemabackend.reservation.domain.ReservationContext;
 import devgraft.dgcinemabackend.reservation.domain.ReservationErrorCode;
+import devgraft.dgcinemabackend.reservation.domain.ReservationException;
 import devgraft.dgcinemabackend.reservation.domain.ReservationRepository;
 import devgraft.dgcinemabackend.reservation.domain.ReservationResult;
 import devgraft.dgcinemabackend.reservation.domain.RunningTimeFinder;
-import devgraft.dgcinemabackend.reservation.exception.ReservationException;
 import devgraft.dgcinemabackend.runningtime.domain.RunningTime;
 import devgraft.dgcinemabackend.user.domain.DgUser;
 import jakarta.transaction.Transactional;
@@ -24,26 +22,18 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class ReservationApp implements ReservationUseCase {
+class ReservationApp implements ReservationUseCase {
 	private final ReservationRepository reservationRepository;
-	private final PaymentRepository paymentRepository;
 	private final RunningTimeFinder runningTimeFinder;
 	private final DgUserFinder dgUserFinder;
-	private final CinemaFinder cinemaFinder;
 
 	public List<String> seatCheck(final Long runningTimeId) {
-		log.info("예약된 좌석 조회", runningTimeId);
 		final RunningTime runningTime = getRunningTime(runningTimeId);
 		return reservationRepository.findSeatNoByRunningTime(runningTime);
 	}
 
 	@Transactional
 	public ReservationResult register(final ReservationContext context) {
-		log.info("예약 진행", context);
-		// user가 존재하는지 검사
-		// runningTimeId가 존재하는지 검사
-		// seetNo가 이미 예약되어잇는지 검사
-
 		// 1. 유저 검사
 		final DgUser user = dgUserFinder.findById(context.userId())
 			.orElseThrow(() -> new ReservationException(ReservationErrorCode.USER_NOT_FOUND));
@@ -76,17 +66,14 @@ public class ReservationApp implements ReservationUseCase {
 		);
 	}
 
-	public List<ReservationResult> getUserReservations(final Long userId) {
-		if (userId == null) {
-			throw new ReservationException(CommonErrorCode.INVALID_PARAMETER);
-		}
-
-		DgUser user = dgUserFinder.findById(userId).orElseThrow(
+	public List<ReservationResult> getUserReservations(final GetMyReservationRequest request) {
+		DgUser user = dgUserFinder.findById(request.userId()).orElseThrow(
 			() -> new ReservationException(ReservationErrorCode.USER_NOT_FOUND)
 		);
 
-		return reservationRepository.findAllByUser(user).stream().map(reservation ->
-			ReservationResult.from(reservation)
-		).toList();
+		return reservationRepository.findAllByUser(user)
+			.stream()
+			.map(reservation -> ReservationResult.from(reservation))
+			.toList();
 	}
 }

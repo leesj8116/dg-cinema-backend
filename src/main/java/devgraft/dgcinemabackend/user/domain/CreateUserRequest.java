@@ -1,7 +1,5 @@
 package devgraft.dgcinemabackend.user.domain;
 
-import devgraft.dgcinemabackend.user.exception.UserException;
-
 public record CreateUserRequest(String account, String password, String nickname) {
 	public CreateUserRequest {
 		if (account == null || account.isBlank()) {

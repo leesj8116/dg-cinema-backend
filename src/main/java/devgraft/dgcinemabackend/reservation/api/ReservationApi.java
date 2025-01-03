@@ -8,18 +8,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import devgraft.dgcinemabackend.reservation.app.ReservationApp;
+import devgraft.dgcinemabackend.reservation.app.ReservationUseCase;
 import devgraft.dgcinemabackend.reservation.domain.GetMyReservationRequest;
 import devgraft.dgcinemabackend.reservation.domain.ReservationContext;
 import devgraft.dgcinemabackend.reservation.domain.ReservationResult;
+import lombok.RequiredArgsConstructor;
 
 @RestController
-public class ReservationApi {
-	private final ReservationApp reservationApp;
-
-	public ReservationApi(ReservationApp reservationApp) {
-		this.reservationApp = reservationApp;
-	}
+@RequiredArgsConstructor
+class ReservationApi {
+	private final ReservationUseCase reservationUseCase;
 
 	/**
 	 * 예약된 좌석 목록을 반환한다.
@@ -27,7 +25,7 @@ public class ReservationApi {
 	 */
 	@GetMapping("/reservation/seat")
 	public List<String> seatCheck(@RequestParam(name = "runningTime") Long runningTimeId) {
-		return reservationApp.seatCheck(runningTimeId);
+		return reservationUseCase.seatCheck(runningTimeId);
 	}
 
 	/**
@@ -37,7 +35,7 @@ public class ReservationApi {
 	 */
 	@PostMapping("/reservation")
 	public ReservationResult register(@RequestBody ReservationContext context) {
-		return reservationApp.register(context);
+		return reservationUseCase.register(context);
 	}
 
 	/**
@@ -47,6 +45,6 @@ public class ReservationApi {
 	 */
 	@PostMapping("/reservation/my")
 	public List<ReservationResult> getUserReservations(@RequestBody GetMyReservationRequest request) {
-		return reservationApp.getUserReservations(request.userId());
+		return reservationUseCase.getUserReservations(request);
 	}
 }

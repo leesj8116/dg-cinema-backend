@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import devgraft.dgcinemabackend.common.exception.CommonExceptionHandler;
 import devgraft.dgcinemabackend.common.exception.ErrorCode;
-import devgraft.dgcinemabackend.reservation.exception.ReservationException;
+import devgraft.dgcinemabackend.reservation.domain.ReservationException;
 
 @RestControllerAdvice
 class ReservationExceptionHandler extends CommonExceptionHandler {

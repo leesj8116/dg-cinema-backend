@@ -1,7 +1,6 @@
 package devgraft.dgcinemabackend.reservation.domain;
 
 import devgraft.dgcinemabackend.common.exception.CommonErrorCode;
-import devgraft.dgcinemabackend.reservation.exception.ReservationException;
 
 public record GetMyReservationRequest(
 	Long userId

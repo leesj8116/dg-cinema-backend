@@ -13,7 +13,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class RunningTimeApp {
+class RunningTimeApp implements RunningTimeUseCase {
 	private final RunningTimeRepository runningTimeRepository;
 	private final MovieFinder movieFinder;
 
@@ -23,7 +23,7 @@ public class RunningTimeApp {
 	 * @param movieTitle
 	 * @return
 	 */
-	public List<RunningTime> getRunningTimesByMovieTitle(String movieTitle) {
+	public List<RunningTime> getRunningTimesByMovieTitle(final String movieTitle) {
 		List<Movie> movies = movieFinder.findMoviesByMovieTitle(movieTitle);
 
 		return runningTimeRepository.findAllByStartTimeGreaterThanEqualAndMovieIn(LocalDateTime.now(), movies);

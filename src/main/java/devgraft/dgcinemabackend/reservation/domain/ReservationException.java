@@ -1,22 +1,22 @@
-package devgraft.dgcinemabackend.movie.exception;
+package devgraft.dgcinemabackend.reservation.domain;
 
 import devgraft.dgcinemabackend.common.exception.CommonErrorCode;
 import devgraft.dgcinemabackend.common.exception.ErrorCode;
 import lombok.Getter;
 
 @Getter
-public class MovieException extends RuntimeException {
+public class ReservationException extends RuntimeException {
 	private final ErrorCode errorCode;
 
-	public MovieException(final ErrorCode errorCode) {
+	public ReservationException(final ErrorCode errorCode) {
 		this(errorCode.getMessage(), errorCode);
 	}
 
-	public MovieException(final String message) {
+	public ReservationException(final String message) {
 		this(message, CommonErrorCode.INTERNAL_SERVER_ERROR);
 	}
 
-	public MovieException(String message, ErrorCode errorCode) {
+	public ReservationException(final String message, final ErrorCode errorCode) {
 		super(message);
 		this.errorCode = errorCode;
 	}

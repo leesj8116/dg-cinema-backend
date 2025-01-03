@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import devgraft.dgcinemabackend.common.exception.CommonExceptionHandler;
 import devgraft.dgcinemabackend.common.exception.ErrorCode;
-import devgraft.dgcinemabackend.movie.exception.MovieException;
+import devgraft.dgcinemabackend.movie.domain.MovieException;
 
 @RestControllerAdvice
 class MovieExceptionHandler extends CommonExceptionHandler {

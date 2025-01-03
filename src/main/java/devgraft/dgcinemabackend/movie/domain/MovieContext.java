@@ -2,8 +2,6 @@ package devgraft.dgcinemabackend.movie.domain;
 
 import java.time.LocalDate;
 
-import devgraft.dgcinemabackend.movie.exception.MovieException;
-
 public record MovieContext(Long movieId, String title, String director, LocalDate releaseDate) {
 	public MovieContext {
 		if (title == null) {
