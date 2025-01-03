@@ -58,15 +58,7 @@ const changePage = async (pageNo = 0) => {
                     alert('영화 목록을 조회할 수 없습니다. 잠시 후 다시 시도해주세요.');
                 });
 
-            const title = document.getElementById('search-movie-title').value;
-            await searchRunningTimeByMovieTitleApi(title)
-                .then((json) => {
-                    console.log('상영시간 정보', json);
-                    uploadRunningTimetable(json);
-                }).catch((error) => {
-                    console.error(error);
-                    alert('상영시간 정보를 조회할 수 없습니다. 잠시 후 다시 시도해주세요.');
-                });
+            await searchRunningTimeWithTitle();
 
             document.getElementById('nav-main').classList.add('selected');
             document.getElementById('nav-my-reservation').onclick = () => changePage(1);
@@ -89,6 +81,23 @@ const changePage = async (pageNo = 0) => {
             break;
     }
 };
+
+/**
+ * '검색' 버튼 클릭시 영화 제목으로된 상영 시간표를 검색하고 표시한다.
+ */
+const searchRunningTimeWithTitle = async () => {
+    const title = document.getElementById('search-movie-title').value;
+
+    await searchRunningTimeByMovieTitleApi(title)
+        .then((json) => {
+            console.log('상영시간 정보', json);
+            uploadRunningTimetable(json);
+        }).catch((error) => {
+            console.error(error);
+            alert('상영시간 정보를 조회할 수 없습니다. 잠시 후 다시 시도해주세요.');
+        });
+}
+
 
 /**
  * 화면에 표시된 영화 목록을 갱신한다. (도움 - chatGPT4o)
@@ -122,7 +131,7 @@ const updateMovieTable = (movies) => {
         const actionCell = document.createElement('td');
         const searchSpan = document.createElement('span');
         searchSpan.textContent = '검색';
-        searchSpan.setAttribute('onclick', `passByMovieTitle('${movie.title}')`);
+        searchSpan.onclick = () => passByMovieTitle(movie.title);
         actionCell.appendChild(searchSpan);
 
         // 행 구성
@@ -192,9 +201,8 @@ const uploadRunningTimetable = (runningTimes) => {
         } else {
             // 아직 상영 전이라면 좌석 확인으로 안내
             // @TODO: 이게 맞나 싶은 데이터 전달
-            searchSpan.setAttribute('onclick',
-                `reservationCheckSeat('${runningTime.runningTimeId}', '${runningTime.movieTitle}',
-                '${formattedDate} ${formattedTime}', '${runningTime.cinemaId}', '${runningTime.screenNumber}')`);
+            searchSpan.onclick = () => reservationCheckSeat(runningTime.runningTimeId, runningTime.movieTitle,
+                formattedDate, formattedTime, runningTime.cinemaId, runningTime.screenNumber);
         }
         actionCell.appendChild(searchSpan);
 
@@ -301,14 +309,14 @@ const passByMovieTitle = (movieName) => {
     document.getElementById('search-movie-title-btn').focus();
 };
 
-const reservationCheckSeat = async (runningTimeId, title, startTime, cinemaStr, screenNumber) => {
+const reservationCheckSeat = async (runningTimeId, title, stdate, sttime, cinemaStr, screenNumber) => {
     // 극장 정보 조회
     const cinemas = JSON.parse(localStorage.getItem('cinemas'));
     const cinemaIdx = Number(cinemaStr);
 
 
     document.getElementById('reservation-task-what').innerText = title;
-    document.getElementById('reservation-task-when').innerText = startTime;
+    document.getElementById('reservation-task-when').innerText = `${stdate} ${sttime}`;
     document.getElementById('reservation-task-where-cinema').innerText = `${cinemas[cinemaIdx].name} (${cinemas[cinemaIdx].location})`;
     document.getElementById('reservation-task-where-screen').innerText = `${screenNumber}관`;
     document.getElementById('reservation-running-time-id').value = runningTimeId;
