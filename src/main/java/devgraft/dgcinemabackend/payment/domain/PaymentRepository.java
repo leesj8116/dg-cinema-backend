@@ -1,4 +1,4 @@
-package devgraft.dgcinemabackend.reservation.domain;
+package devgraft.dgcinemabackend.payment.domain;
 
 public interface PaymentRepository {
 	Payment save(Payment payment);

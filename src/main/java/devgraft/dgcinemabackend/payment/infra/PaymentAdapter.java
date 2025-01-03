@@ -1,9 +1,9 @@
-package devgraft.dgcinemabackend.reservation.infra;
+package devgraft.dgcinemabackend.payment.infra;
 
 import org.springframework.stereotype.Component;
 
-import devgraft.dgcinemabackend.reservation.domain.Payment;
-import devgraft.dgcinemabackend.reservation.domain.PaymentRepository;
+import devgraft.dgcinemabackend.payment.domain.Payment;
+import devgraft.dgcinemabackend.payment.domain.PaymentRepository;
 
 @Component
 class PaymentAdapter implements PaymentRepository {

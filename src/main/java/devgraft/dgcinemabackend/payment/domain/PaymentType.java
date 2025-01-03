@@ -1,4 +1,4 @@
-package devgraft.dgcinemabackend.reservation.domain;
+package devgraft.dgcinemabackend.payment.domain;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

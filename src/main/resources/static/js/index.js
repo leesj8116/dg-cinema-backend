@@ -356,7 +356,7 @@ const updateReservationSeat = (seats) => {
             if (seats.indexOf(seatNo) !== -1) {
                 td.classList.add('already'); // 예약된 자리는 다르게 표시
             } else {
-                td.setAttribute('onclick', `selectMySeat('${seatNo}')`);
+                td.onclick = () => selectMySeat(seatNo);
             }
 
             row.appendChild(td);
@@ -371,7 +371,7 @@ const updateReservationSeat = (seats) => {
  * @param mySeat
  */
 const selectMySeat = (mySeat) => {
-    const selectedItem = document.querySelector('#reservation-seat-info-body .selected')
+    const selectedItem = document.querySelector('#reservation-seat-info-body .selected');
 
     if (selectedItem != null) {
         selectedItem.classList.remove('selected');
@@ -474,7 +474,21 @@ const checkMyReservation = async () => {
                 created.textContent = `${createdDate.formattedDate} ${createdDate.formattedTime}`;
 
                 const status = document.createElement('td');
-                status.textContent = reservation.status;
+
+                switch (reservation.status) {
+                    case 'PENDING':
+                        status.textContent = '결제 대기';
+                        break;
+                    case 'SUCCESS':
+                        status.textContent = '결제 완료';
+                        break;
+                    case 'CANCEL':
+                        status.textContent = '예약 취소';
+                        break;
+                    default:
+                        status.textContent = '운영자 문의';
+                }
+                ;
 
                 const action = document.createElement('td');
 
@@ -486,7 +500,7 @@ const checkMyReservation = async () => {
                 actionCancel.textContent = '취소';
                 actionCancel.onclick = () => {
                     alert(`취소 ${reservation.reservationId}`);
-                }
+                };
 
                 const actionMain = document.createElement('span');  // 예약 상황에 따라 기능이 달라짐
 
@@ -494,9 +508,7 @@ const checkMyReservation = async () => {
                     case 'PENDING':
                         actionMain.classList.add('payment');
                         actionMain.textContent = '결제';
-                        actionMain.onclick = () => {
-                            alert(`결제 실행 ${reservation.reservationId}`);
-                        }
+                        actionMain.onclick = () => runPurchase(reservation.reservationId, 10000);
 
                         action.appendChild(actionMain);
                         action.appendChild(dummy);
@@ -581,4 +593,21 @@ const dateStringSplit = (input = '') => {
     const formattedTime = `${hour}시 ${minute}분`;
 
     return {formattedDate, formattedTime};
+}
+
+const runPurchase = async (reservationId, amount) => {
+    await registerPaymentApi(reservationId, amount)
+        .then((json) => {
+            console.log('결제 API 결과', json);
+
+            if (json.code) {
+                throw new Error(json.message);
+            }
+
+            alert("결제를 완료했습니다. 즐거운 시간 보내세요.");
+            checkMyReservation();
+        }).catch((error) => {
+            console.error(error);
+            alert('결제를 실패했습니다. 잠시 후 다시 시도해주세요.');
+        });
 }

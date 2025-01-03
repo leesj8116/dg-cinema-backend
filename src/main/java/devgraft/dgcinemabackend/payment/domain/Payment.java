@@ -1,6 +1,7 @@
-package devgraft.dgcinemabackend.reservation.domain;
+package devgraft.dgcinemabackend.payment.domain;
 
 import devgraft.dgcinemabackend.common.domain.BaseEntity;
+import devgraft.dgcinemabackend.reservation.domain.Reservation;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

@@ -63,4 +63,18 @@ const getMyReservationApi = async (userId = -1) => {
             userId
         })
     }).then((response) => response.json());
-}
+};
+
+const registerPaymentApi = async (reservationId, amount = 10000) => {
+    return await fetch(`/payment/purchase`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json;charset=UTF-8'
+        },
+        body: JSON.stringify({
+            reservationId,
+            amount
+        })
+    }).then((response) => response.json());
+
+};
