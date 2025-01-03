@@ -1,5 +1,7 @@
 package devgraft.dgcinemabackend.reservation.domain;
 
+import org.hibernate.annotations.DynamicUpdate;
+
 import devgraft.dgcinemabackend.common.domain.BaseEntity;
 import devgraft.dgcinemabackend.runningtime.domain.RunningTime;
 import devgraft.dgcinemabackend.user.domain.DgUser;
@@ -24,6 +26,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "reservation")
 @NoArgsConstructor
 @AllArgsConstructor
+@DynamicUpdate
 @Entity
 public class Reservation extends BaseEntity {
 	@Id
@@ -46,4 +49,9 @@ public class Reservation extends BaseEntity {
 	@Enumerated(EnumType.STRING)
 	@Builder.Default
 	private ReservationStatus status = ReservationStatus.PENDING;   // 예약 상태
+
+	// @TODO: 이 메소드가 적절한지 다시 검토 필요
+	public void modifyStatus(ReservationStatus newStatus) {
+		this.status = newStatus;
+	}
 }

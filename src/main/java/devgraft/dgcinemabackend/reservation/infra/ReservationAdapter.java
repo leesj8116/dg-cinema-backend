@@ -1,6 +1,7 @@
 package devgraft.dgcinemabackend.reservation.infra;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Component;
 
@@ -15,6 +16,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 class ReservationAdapter implements ReservationRepository {
 	private final ReservationJpaRepository reservationJpaRepository;
+
+	@Override
+	public Optional<Reservation> findById(final Long id) {
+		return reservationJpaRepository.findById(id);
+	}
 
 	@Override
 	public List<String> findSeatNoByRunningTime(RunningTime runningTime) {

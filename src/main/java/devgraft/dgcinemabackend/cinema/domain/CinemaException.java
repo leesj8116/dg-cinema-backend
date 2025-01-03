@@ -1,4 +1,4 @@
-package devgraft.dgcinemabackend.cinema.exception;
+package devgraft.dgcinemabackend.cinema.domain;
 
 import devgraft.dgcinemabackend.common.exception.CommonErrorCode;
 import devgraft.dgcinemabackend.common.exception.ErrorCode;

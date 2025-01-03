@@ -1,7 +1,7 @@
 package devgraft.dgcinemabackend.cinema.app;
 
 import devgraft.dgcinemabackend.cinema.domain.CinemaErrorCode;
-import devgraft.dgcinemabackend.cinema.exception.CinemaException;
+import devgraft.dgcinemabackend.cinema.domain.CinemaException;
 
 public record CreateCinemaRequest(
 	String name,

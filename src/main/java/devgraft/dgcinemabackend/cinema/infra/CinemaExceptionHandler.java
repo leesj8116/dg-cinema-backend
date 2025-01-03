@@ -4,9 +4,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import devgraft.dgcinemabackend.cinema.exception.CinemaException;
+import devgraft.dgcinemabackend.cinema.domain.CinemaException;
 import devgraft.dgcinemabackend.common.exception.CommonExceptionHandler;
-import devgraft.dgcinemabackend.common.exception.ErrorCode;
 
 @RestControllerAdvice
 class CinemaExceptionHandler extends CommonExceptionHandler {
@@ -14,7 +13,6 @@ class CinemaExceptionHandler extends CommonExceptionHandler {
 	public ResponseEntity<Object> handleCinemaException(CinemaException e) {
 		e.printStackTrace();
 
-		ErrorCode errorCode = e.getErrorCode();
-		return handleExceptionInternal(errorCode);
+		return handleExceptionInternal(e.getErrorCode(), e.getMessage());
 	}
 }
