@@ -5,20 +5,21 @@ import org.springframework.stereotype.Service;
 import devgraft.dgcinemabackend.user.domain.CreateUserRequest;
 import devgraft.dgcinemabackend.user.domain.DgUser;
 import devgraft.dgcinemabackend.user.domain.DgUserRepository;
+import devgraft.dgcinemabackend.user.domain.DgUserResult;
+import lombok.RequiredArgsConstructor;
 
 @Service
-public class DgUserApp {
+@RequiredArgsConstructor
+class DgUserApp implements DgUserUseCase {
 	private final DgUserRepository dgUserRepository;
 
-	public DgUserApp(DgUserRepository dgUserRepository) {
-		this.dgUserRepository = dgUserRepository;
-	}
-
-	public DgUser register(CreateUserRequest request) {
-		return dgUserRepository.save(DgUser.builder()
+	public DgUserResult register(final CreateUserRequest request) {
+		DgUser user = dgUserRepository.save(DgUser.builder()
 			.account(request.account())
 			.password(request.password())
 			.nickname(request.nickname())
 			.build());
+
+		return DgUserResult.from(user);
 	}
 }

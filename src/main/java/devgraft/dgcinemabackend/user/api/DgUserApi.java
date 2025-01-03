@@ -1,22 +1,17 @@
 package devgraft.dgcinemabackend.user.api;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import devgraft.dgcinemabackend.user.app.DgUserApp;
+import devgraft.dgcinemabackend.user.app.DgUserUseCase;
 import devgraft.dgcinemabackend.user.domain.CreateUserRequest;
-import devgraft.dgcinemabackend.user.domain.DgUser;
+import devgraft.dgcinemabackend.user.domain.DgUserResult;
+import lombok.RequiredArgsConstructor;
 
 @RestController
-public class DgUserApi {
-	private final DgUserApp userApp;
-
-	@Autowired
-	public DgUserApi(DgUserApp userApp) {
-		this.userApp = userApp;
-	}
+@RequiredArgsConstructor
+class DgUserApi {
+	private final DgUserUseCase userUseCase;
 
 	/**
 	 * 유저 생성
@@ -25,7 +20,7 @@ public class DgUserApi {
 	 * @return
 	 */
 	@PostMapping("/user")
-	public ResponseEntity<DgUser> createUser(CreateUserRequest createUserRequest) {
-		return ResponseEntity.ok(userApp.register(createUserRequest));
+	public DgUserResult createUser(CreateUserRequest createUserRequest) {
+		return userUseCase.register(createUserRequest);
 	}
 }
