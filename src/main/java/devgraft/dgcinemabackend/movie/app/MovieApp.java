@@ -4,27 +4,19 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import devgraft.dgcinemabackend.movie.domain.Movie;
-import devgraft.dgcinemabackend.movie.domain.MovieContext;
 import devgraft.dgcinemabackend.movie.domain.MovieRepository;
+import devgraft.dgcinemabackend.movie.domain.MovieResult;
+import lombok.RequiredArgsConstructor;
 
 @Service
-public class MovieApp {
+@RequiredArgsConstructor
+class MovieApp implements MovieUseCase {
 	private final MovieRepository movieRepository;
 
-	public MovieApp(MovieRepository movieRepository) {
-		this.movieRepository = movieRepository;
-	}
-
-	public void register(MovieContext context) {
-		movieRepository.save(Movie.builder()
-			.title(context.title())
-			.director(context.director())
-			.releaseDate(context.releaseDate())
-			.build());
-	}
-
-	public List<Movie> getMovies() {
-		return movieRepository.findAllByOrderByReleaseDateAsc();
+	public List<MovieResult> getMovies() {
+		return movieRepository.findAllByOrderByReleaseDateAsc()
+			.stream()
+			.map(movie -> MovieResult.from(movie))
+			.toList();
 	}
 }
