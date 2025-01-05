@@ -1,5 +1,7 @@
 package devgraft.dgcinemabackend.payment.app;
 
+import java.time.LocalDateTime;
+
 import org.springframework.stereotype.Service;
 
 import devgraft.dgcinemabackend.payment.domain.Payment;
@@ -49,5 +51,25 @@ public class PaymentApp implements PaymentUseCase {
 			payment.getPaymentId(), payment.getAmount(),
 			payment.getSuccess(), message
 		);
+
+	}
+
+	// @TODO: Reservaion이 유효한지 확인하는 책임을 Payment가 가져가는 게 옳은가..?
+
+	/**
+	 * 예약이 생성된지 5분 이내인지 확인한다.
+	 * @param purchaseContext
+	 * @return
+	 */
+	@Override
+	public void reservationIsAvailable(final Long reservationId) {
+		Reservation reservation = reservationFinder.findById(reservationId)
+			.orElseThrow(() -> new PaymentException(PaymentErrorCode.RESERVATION_NOT_FOUND));
+
+		LocalDateTime createdDate = reservation.getCreatedDate();
+		if (LocalDateTime.now().isAfter(createdDate.plusMinutes(5L))) {
+			// 예약이 생성된지 5분이 지났을 경우
+			throw new PaymentException(PaymentErrorCode.RESERVATION_IS_EXPIRED);
+		}
 	}
 }
