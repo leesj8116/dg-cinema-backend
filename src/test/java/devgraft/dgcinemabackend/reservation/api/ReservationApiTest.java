@@ -31,7 +31,6 @@ public class ReservationApiTest {
 	void setUp() {
 		reservationUseCase = Mockito.mock(ReservationUseCase.class);
 		mockMvc = MockMvcBuilders.standaloneSetup(new ReservationApi(reservationUseCase)).build();
-
 	}
 
 	@Test

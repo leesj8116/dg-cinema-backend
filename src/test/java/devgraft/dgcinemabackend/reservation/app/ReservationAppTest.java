@@ -26,7 +26,7 @@ import devgraft.dgcinemabackend.reservation.domain.RunningTimeFinder;
 @ExtendWith(MockitoExtension.class)
 class ReservationAppTest {
 	@InjectMocks
-	private ReservationUseCase reservationUseCase;
+	private ReservationApp reservationApp;
 
 	@Mock
 	private DgUserFinder dgUserFinder;
@@ -39,8 +39,6 @@ class ReservationAppTest {
 
 	@BeforeEach
 	void setUp() {
-		reservationUseCase = new ReservationApp(reservationRepository, runningTimeFinder, dgUserFinder);
-
 		Mockito.lenient()
 			.when(dgUserFinder.findById(Mockito.anyLong()))
 			.thenReturn(Optional.of(anDgUser().build()));
@@ -58,7 +56,7 @@ class ReservationAppTest {
 		Mockito.when(runningTimeFinder.findById(Mockito.anyLong())).thenReturn(Optional.empty());
 
 		final ReservationException exception = Assertions.catchThrowableOfType(
-			ReservationException.class, () -> reservationUseCase.seatCheck(1L));
+			ReservationException.class, () -> reservationApp.seatCheck(1L));
 
 		Assertions.assertThat(exception).isNotNull();
 		Assertions.assertThat(exception.getErrorCode())
@@ -72,7 +70,7 @@ class ReservationAppTest {
 		Mockito.when(dgUserFinder.findById(Mockito.anyLong())).thenReturn(Optional.empty());
 
 		final ReservationException exception = Assertions.catchThrowableOfType(
-			ReservationException.class, () -> reservationUseCase.register(givenContext));
+			ReservationException.class, () -> reservationApp.register(givenContext));
 
 		Assertions.assertThat(exception).isNotNull();
 		Assertions.assertThat(exception.getErrorCode())
@@ -86,7 +84,7 @@ class ReservationAppTest {
 		Mockito.when(runningTimeFinder.findById(Mockito.anyLong())).thenReturn(Optional.empty());
 
 		final ReservationException exception = Assertions.catchThrowableOfType(
-			ReservationException.class, () -> reservationUseCase.register(givenContext));
+			ReservationException.class, () -> reservationApp.register(givenContext));
 
 		Assertions.assertThat(exception).isNotNull();
 		Assertions.assertThat(exception.getErrorCode())
@@ -100,7 +98,7 @@ class ReservationAppTest {
 		Mockito.when(reservationRepository.findSeatNoByRunningTime(Mockito.any())).thenReturn(List.of("A1", "A2"));
 
 		final ReservationException exception = Assertions.catchThrowableOfType(
-			ReservationException.class, () -> reservationUseCase.register(givenContext));
+			ReservationException.class, () -> reservationApp.register(givenContext));
 
 		Assertions.assertThat(exception).isNotNull();
 		Assertions.assertThat(exception.getErrorCode())
@@ -114,7 +112,7 @@ class ReservationAppTest {
 		Mockito.when(dgUserFinder.findById(Mockito.anyLong())).thenReturn(Optional.empty());
 
 		final ReservationException exception = Assertions.catchThrowableOfType(
-			ReservationException.class, () -> reservationUseCase.getUserReservations(givenRequest));
+			ReservationException.class, () -> reservationApp.getUserReservations(givenRequest));
 
 		Assertions.assertThat(exception).isNotNull();
 		Assertions.assertThat(exception.getErrorCode())

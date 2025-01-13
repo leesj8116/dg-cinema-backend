@@ -2,10 +2,10 @@ package devgraft.dgcinemabackend.payment.app;
 
 import static devgraft.dgcinemabackend.payment.PaymentFixture.*;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,9 +21,9 @@ import devgraft.dgcinemabackend.payment.domain.ReservationFinder;
 import devgraft.dgcinemabackend.payment.domain.ReservationRegister;
 
 @ExtendWith(MockitoExtension.class)
-class PaymentUseCaseTest {
+class PaymentAppTest {
 	@InjectMocks
-	private PaymentUseCase paymentUseCase;
+	private PaymentApp paymentApp;
 
 	@Mock
 	private PaymentRepository paymentRepository;
@@ -34,19 +34,16 @@ class PaymentUseCaseTest {
 	@Mock
 	private ReservationRegister reservationRegister;
 
-	@BeforeEach
-	void setUp() {
-		paymentUseCase = new PaymentApp(paymentRepository, reservationFinder, reservationRegister);
-	}
-
 	@Test
 	@DisplayName("예약 만료 확인 호출시, 유효시간(생성으로 부터 5분)이 지나면 에러를 반환한다")
 	void reservation_is_available_should_throw_exception_when_reservation_created_date_has_left_5_minutes() {
 		Mockito.when(reservationFinder.findById(Mockito.anyLong()))
-			.thenReturn(Optional.of(anReservation().build()));      // @TODO: 어떻게 createdDate를 5분 전으로 설정할 수 있지?
+			.thenReturn(Optional.of(
+				anReservation().createdDate(LocalDateTime.now().minusMinutes(5L)).build()
+			));
 
 		final PaymentException exception = Assertions.catchThrowableOfType(
-			PaymentException.class, () -> paymentUseCase.reservationIsAvailable(1L)
+			PaymentException.class, () -> paymentApp.reservationIsAvailable(1L)
 		);
 
 		Assertions.assertThat(exception).isNotNull();

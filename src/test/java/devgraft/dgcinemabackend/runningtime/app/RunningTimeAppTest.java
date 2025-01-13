@@ -1,6 +1,5 @@
 package devgraft.dgcinemabackend.runningtime.app;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -12,18 +11,12 @@ import devgraft.dgcinemabackend.runningtime.domain.RunningTimeRepository;
 @ExtendWith(MockitoExtension.class)
 class RunningTimeAppTest {
 	@InjectMocks
-	private RunningTimeUseCase runningTimeUseCase;
+	private RunningTimeApp runningTimeApp;
 
 	@Mock
 	private MovieFinder movieFinder;
 
 	@Mock
 	private RunningTimeRepository runningTimeRepository;
-
-	@BeforeEach
-	void setUp() {
-		runningTimeUseCase = new RunningTimeApp(runningTimeRepository, movieFinder);
-
-	}
 
 }

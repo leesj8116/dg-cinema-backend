@@ -14,7 +14,7 @@ public class PaymentFixture {
 			.reservation(anReservation().build());
 	}
 
-	public static Reservation.ReservationBuilder anReservation() {
+	public static Reservation.ReservationBuilder<?, ?> anReservation() {
 		return Reservation.builder().reservationId(1L);
 	}
 }
