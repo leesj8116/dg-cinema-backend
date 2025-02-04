@@ -601,13 +601,14 @@ const runPurchase = async (reservationId, amount) => {
             console.log('결제 API 결과', json);
 
             if (json.code) {
-                throw new Error(json.message);
+                throw json.message;
             }
 
             alert("결제를 완료했습니다. 즐거운 시간 보내세요.");
-            checkMyReservation();
         }).catch((error) => {
             console.error(error);
-            alert('결제를 실패했습니다. 잠시 후 다시 시도해주세요.');
-        });
+            alert('결제를 실패했습니다.', error);
+        }).finally(() => {
+            checkMyReservation();
+        })
 }

@@ -15,61 +15,55 @@ import devgraft.dgcinemabackend.payment.domain.ReservationFinder;
 import devgraft.dgcinemabackend.payment.domain.ReservationRegister;
 import devgraft.dgcinemabackend.reservation.domain.Reservation;
 import devgraft.dgcinemabackend.reservation.domain.ReservationStatus;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class PaymentApp implements PaymentUseCase {
+	private final ExternalUseCase externalUseCase;
 	private final PaymentRepository paymentRepository;
 	private final ReservationFinder reservationFinder;
 	private final ReservationRegister reservationRegister;
 
 	@Override
-	@Transactional
-	public PaymentResult purchase(final PurchaseContext purchaseContext, final Boolean result, final String message) {
+	public PaymentResult purchase(final PurchaseContext purchaseContext) {
 		// 1. 예약 조회
 		Reservation reservation = reservationFinder.findById(purchaseContext.reservationId())
 			.orElseThrow(() -> new PaymentException(PaymentErrorCode.RESERVATION_NOT_FOUND));
 
-		// 2. 결제 저장
-		Payment payment = paymentRepository.save(Payment.builder()
-			.reservation(Reservation.builder().reservationId(purchaseContext.reservationId()).build())
-			.amount(10000)
-			.type(PaymentType.PURCHASE)
-			.success(result)
-			.build());
-
-		// 3. 예약 결과를 '결제 완료'로 변경
-		reservation.modifyStatus(ReservationStatus.SUCCESS);
-
-		// 4. 업데이트 된 예약을 DB에 반영
-		reservationRegister.save(reservation);
-
-		// 5. 결과 반환
-		return PaymentResult.of(
-			payment.getPaymentId(), payment.getAmount(),
-			payment.getSuccess(), message
-		);
-
-	}
-
-	// @TODO: Reservaion이 유효한지 확인하는 책임을 Payment가 가져가는 게 옳은가..?
-
-	/**
-	 * 예약이 생성된지 5분 이내인지 확인한다.
-	 * @param purchaseContext
-	 * @return
-	 */
-	@Override
-	public void reservationIsAvailable(final Long reservationId) {
-		Reservation reservation = reservationFinder.findById(reservationId)
-			.orElseThrow(() -> new PaymentException(PaymentErrorCode.RESERVATION_NOT_FOUND));
-
+		// 2. 예약 유효성 및 정상 동작 검사
+		//// 2-1. 예약 생성 후 5분 이후에 결제를 시도할 경우 에러 반환
 		LocalDateTime createdDate = reservation.getCreatedDate();
 		if (LocalDateTime.now().isAfter(createdDate.plusMinutes(5L))) {
-			// 예약이 생성된지 5분이 지났을 경우
 			throw new PaymentException(PaymentErrorCode.RESERVATION_IS_EXPIRED);
 		}
+		//// 2-2. 결제 대기 상태가 아닌 예약에 대해 처리할 경우 (중복 결제 또는 취소로 인해 만료된 예약 건)
+		if (!reservation.getStatus().equals(ReservationStatus.PENDING)) {
+			throw new PaymentException(PaymentErrorCode.RESERVATION_IS_ALREADY_EXECUTED);
+		}
+
+		// 3. 외부 결제 API에 대해 결제 요청
+		Payment payment = null;
+		Boolean externalResult = Boolean.FALSE;
+		try {
+			externalResult = externalUseCase.purchase();	// 외부 결제 모듈에 결제 요청 및 완료 (더미 흉내)
+		} catch (RuntimeException e) {
+			e.printStackTrace();
+			throw new PaymentException(PaymentErrorCode.EXTERNAL_PAYMENT_ERROR);
+		} finally {
+			payment = paymentRepository.save(Payment.builder()
+				.reservation(reservation)
+				.amount(purchaseContext.amount())
+				.type(PaymentType.PURCHASE)
+				.success(externalResult)
+				.build());
+		}
+
+		if (externalResult) {
+			reservation.modifyStatus(ReservationStatus.SUCCESS);
+			reservationRegister.save(reservation);
+		}
+
+		return PaymentResult.of(payment.getPaymentId(), payment.getAmount(), payment.getSuccess());
 	}
 }

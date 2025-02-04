@@ -9,10 +9,11 @@ import devgraft.dgcinemabackend.payment.domain.PaymentException;
 
 @RestControllerAdvice
 class PaymentExceptionHandler extends CommonExceptionHandler {
+
 	@ExceptionHandler(PaymentException.class)
-	public ResponseEntity<Object> handlePaymentException(final PaymentException e) {
+	public ResponseEntity<Object> handlePaymentException(PaymentException e) {
 		e.printStackTrace();
-		
+
 		return handleExceptionInternal(e.getErrorCode(), e.getMessage());
 	}
 }

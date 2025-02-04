@@ -17,6 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import devgraft.dgcinemabackend.payment.domain.PaymentErrorCode;
 import devgraft.dgcinemabackend.payment.domain.PaymentException;
 import devgraft.dgcinemabackend.payment.domain.PaymentRepository;
+import devgraft.dgcinemabackend.payment.domain.PurchaseContext;
 import devgraft.dgcinemabackend.payment.domain.ReservationFinder;
 import devgraft.dgcinemabackend.payment.domain.ReservationRegister;
 
@@ -42,8 +43,10 @@ class PaymentAppTest {
 				anReservation().createdDate(LocalDateTime.now().minusMinutes(5L)).build()
 			));
 
+		final PurchaseContext purchaseContext = new PurchaseContext(1L, 10000);
+
 		final PaymentException exception = Assertions.catchThrowableOfType(
-			PaymentException.class, () -> paymentApp.reservationIsAvailable(1L)
+			PaymentException.class, () -> paymentApp.purchase(purchaseContext)
 		);
 
 		Assertions.assertThat(exception).isNotNull();

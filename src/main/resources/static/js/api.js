@@ -3,7 +3,7 @@
  */
 const getCinemasApi = async () => {
     return await fetch('/cinema')
-        .then((response) => response.json());
+        .then(resposneToJson);
 };
 
 /**
@@ -11,7 +11,7 @@ const getCinemasApi = async () => {
  */
 const getMoviesApi = async () => {
     return await fetch('/movie')
-        .then((response) => response.json());
+        .then(resposneToJson);
 };
 
 /**
@@ -22,7 +22,7 @@ const searchRunningTimeByMovieTitleApi = async (title) => {
     const queryString = new URLSearchParams({'title': title}).toString();
 
     return await fetch(`/running-time?${queryString}`)
-        .then((response) => response.json());
+        .then(resposneToJson);
 };
 
 /**
@@ -32,7 +32,7 @@ const reservationCheckSeatApi = async (runningTimeId) => {
     const queryString = new URLSearchParams({'runningTime': runningTimeId}).toString();
 
     return await fetch(`/reservation/seat?${queryString}`)
-        .then((response) => response.json());
+        .then(resposneToJson);
 }
 
 /**
@@ -47,7 +47,7 @@ const registerReservationApi = async (userId, runningTimeId, seatNo) => {
         body: JSON.stringify({
             userId, runningTimeId, seatNo
         })
-    }).then((response) => response.json());
+    }).then(resposneToJson);
 };
 
 /**
@@ -62,7 +62,7 @@ const getMyReservationApi = async (userId = -1) => {
         body: JSON.stringify({
             userId
         })
-    }).then((response) => response.json());
+    }).then(resposneToJson);
 };
 
 const registerPaymentApi = async (reservationId, amount = 10000) => {
@@ -75,6 +75,18 @@ const registerPaymentApi = async (reservationId, amount = 10000) => {
             reservationId,
             amount
         })
-    }).then((response) => response.json());
+    }).then(resposneToJson);
+};
 
+const resposneToJson = async (response) => {
+    if (!response.ok) {
+        const errorData = await response.json().catch(() => null);
+        if (errorData) {
+            throw errorData;
+        } else {
+            throw {message: "서버 내부에서 오류가 발생했습니다."};
+        }
+    }
+
+    return response.json();
 };

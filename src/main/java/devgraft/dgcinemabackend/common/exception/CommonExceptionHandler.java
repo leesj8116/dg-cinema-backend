@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
  */
 @RestControllerAdvice
 public class CommonExceptionHandler {
-	@ExceptionHandler({Exception.class})
+	@ExceptionHandler({RuntimeException.class})
 	public ResponseEntity<Object> handleException(Exception e) {
 		e.printStackTrace();
 
