@@ -485,6 +485,9 @@ const checkMyReservation = async () => {
                     case 'CANCEL':
                         status.textContent = '예약 취소';
                         break;
+                    case 'EXPIRED':
+                        status.textContent = '예약 만료'
+                        break;
                     default:
                         status.textContent = '운영자 문의';
                 }

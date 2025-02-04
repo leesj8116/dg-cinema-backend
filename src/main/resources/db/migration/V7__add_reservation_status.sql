@@ -3,4 +3,4 @@
 ------------------------------------------------------------
 
 ALTER TABLE reservation
-ADD COLUMN status ENUM('PENDING', 'SUCCESS', 'CANCEL') NOT NULL DEFAULT 'PENDING' COMMENT '예약 상태';
+ADD COLUMN status ENUM('PENDING', 'SUCCESS', 'CANCEL', 'EXPIRED') NOT NULL DEFAULT 'PENDING' COMMENT '예약 상태';

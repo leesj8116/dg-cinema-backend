@@ -34,7 +34,11 @@ public class PaymentApp implements PaymentUseCase {
 		// 2. 예약 유효성 및 정상 동작 검사
 		//// 2-1. 예약 생성 후 5분 이후에 결제를 시도할 경우 에러 반환
 		LocalDateTime createdDate = reservation.getCreatedDate();
-		if (LocalDateTime.now().isAfter(createdDate.plusMinutes(5L))) {
+		if (LocalDateTime.now().isAfter(createdDate.plusMinutes(0L))) {
+			// 예약 후 5분이 지났을 경우
+			reservation.modifyStatus(ReservationStatus.EXPIRED);	// 예약 만료로 변경
+			reservationRegister.save(reservation);					// 예약 상태 변경 반영
+
 			throw new PaymentException(PaymentErrorCode.RESERVATION_IS_EXPIRED);
 		}
 		//// 2-2. 결제 대기 상태가 아닌 예약에 대해 처리할 경우 (중복 결제 또는 취소로 인해 만료된 예약 건)
