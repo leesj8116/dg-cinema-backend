@@ -607,7 +607,7 @@ const runPurchase = async (reservationId, amount) => {
             alert("결제를 완료했습니다. 즐거운 시간 보내세요.");
         }).catch((error) => {
             console.error(error);
-            alert('결제를 실패했습니다.', error);
+            alert('결제를 실패했습니다. ' + error.message);
         }).finally(() => {
             checkMyReservation();
         })
