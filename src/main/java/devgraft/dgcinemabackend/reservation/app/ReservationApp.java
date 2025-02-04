@@ -1,6 +1,9 @@
 package devgraft.dgcinemabackend.reservation.app;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -12,6 +15,7 @@ import devgraft.dgcinemabackend.reservation.domain.ReservationErrorCode;
 import devgraft.dgcinemabackend.reservation.domain.ReservationException;
 import devgraft.dgcinemabackend.reservation.domain.ReservationRepository;
 import devgraft.dgcinemabackend.reservation.domain.ReservationResult;
+import devgraft.dgcinemabackend.reservation.domain.ReservationStatus;
 import devgraft.dgcinemabackend.reservation.domain.RunningTimeFinder;
 import devgraft.dgcinemabackend.runningtime.domain.RunningTime;
 import devgraft.dgcinemabackend.user.domain.DgUser;
@@ -26,10 +30,14 @@ class ReservationApp implements ReservationUseCase {
 	private final ReservationRepository reservationRepository;
 	private final RunningTimeFinder runningTimeFinder;
 	private final DgUserFinder dgUserFinder;
+	private final Set<ReservationStatus> usedStatus = Arrays.stream(new ReservationStatus[] {ReservationStatus.PENDING,
+		ReservationStatus.SUCCESS}).collect(Collectors.toSet());
 
 	public List<String> seatCheck(final Long runningTimeId) {
 		final RunningTime runningTime = getRunningTime(runningTimeId);
-		return reservationRepository.findSeatNoByRunningTime(runningTime);
+
+
+		return reservationRepository.findSeatNoByRunningTimeAndStatusIn(runningTime, usedStatus);
 	}
 
 	@Transactional
@@ -42,7 +50,7 @@ class ReservationApp implements ReservationUseCase {
 		final RunningTime runningTime = getRunningTime(context.runningTimeId());
 
 		// 3. 좌석 검사
-		reservationRepository.findSeatNoByRunningTime(runningTime)
+		reservationRepository.findSeatNoByRunningTimeAndStatusIn(runningTime, usedStatus)
 			.stream()
 			.filter(seatNo -> seatNo.equals(context.seatNo()))
 			.findAny()

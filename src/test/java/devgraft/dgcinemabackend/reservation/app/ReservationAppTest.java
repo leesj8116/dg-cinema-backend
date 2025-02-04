@@ -46,7 +46,7 @@ class ReservationAppTest {
 			.when(runningTimeFinder.findById(Mockito.anyLong()))
 			.thenReturn(Optional.of(anRunningTime().build()));
 		Mockito.lenient()
-			.when(reservationRepository.findSeatNoByRunningTime(Mockito.any()))
+			.when(reservationRepository.findSeatNoByRunningTimeAndStatusIn(Mockito.any(), Mockito.anySet()))
 			.thenReturn(List.of());
 	}
 
@@ -95,7 +95,7 @@ class ReservationAppTest {
 	@DisplayName("예약 등록시 이미 예약된 좌석일 경우 에러를 반환한다")
 	void register_should_throw_exception_when_seat_already_exists() {
 		final ReservationContext givenContext = new ReservationContext(1L, 1L, "A1");
-		Mockito.when(reservationRepository.findSeatNoByRunningTime(Mockito.any())).thenReturn(List.of("A1", "A2"));
+		Mockito.when(reservationRepository.findSeatNoByRunningTimeAndStatusIn(Mockito.any(), Mockito.anySet())).thenReturn(List.of("A1", "A2"));
 
 		final ReservationException exception = Assertions.catchThrowableOfType(
 			ReservationException.class, () -> reservationApp.register(givenContext));
