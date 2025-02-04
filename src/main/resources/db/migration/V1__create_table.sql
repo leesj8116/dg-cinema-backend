@@ -9,7 +9,7 @@ CREATE TABLE dg_user (
     password VARCHAR(100) NOT NULL COMMENT '비밀번호',
     nickname VARCHAR(30) NOT NULL COMMENT '사용자 이름',
     created_date TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    last_modified_date TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP
+    last_modified_date TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
 -- 영화
@@ -19,7 +19,7 @@ CREATE TABLE movie (
     director VARCHAR(50) COMMENT '감독',
     release_date DATE COMMENT '개봉일 (국내 기준)',
     created_date TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    last_modified_date TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP
+    last_modified_date TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
 -- 극장
@@ -28,7 +28,7 @@ CREATE TABLE cinema (
     name VARCHAR(50) NOT NULL COMMENT '극장 이름',
     location VARCHAR(200) NOT NULL COMMENT '극장 위치',
     created_date TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    last_modified_date TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP
+    last_modified_date TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
 -- 상영관
@@ -36,7 +36,7 @@ CREATE TABLE screen_room (
     cinema_id BIGINT NOT NULL COMMENT '극장 아이디',
     screen_number BIGINT NOT NULL COMMENT '상영관 번호',
     created_date TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    last_modified_date TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    last_modified_date TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (cinema_id, screen_number),
     FOREIGN KEY (cinema_id) REFERENCES cinema(cinema_id)
 );
@@ -49,7 +49,7 @@ CREATE TABLE running_time (
     screen_number BIGINT NOT NULL COMMENT '상영관 번호',
     start_time TIMESTAMP(6) NOT NULL COMMENT '상영 시작 시간',
     created_date TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    last_modified_date TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    last_modified_date TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (running_time_id),
     FOREIGN KEY (movie_id) REFERENCES movie(movie_id),
     FOREIGN KEY (cinema_id, screen_number) REFERENCES screen_room(cinema_id, screen_number)
@@ -62,7 +62,7 @@ CREATE TABLE reservation (
     running_time_id BIGINT NOT NULL COMMENT '상영시간 아이디',
     seet_no VARCHAR(10) NOT NULL COMMENT '좌석번호',
     created_date TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    last_modified_date TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    last_modified_date TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES dg_user(user_id),
     FOREIGN KEY (running_time_id) REFERENCES running_time(running_time_id)
 );
