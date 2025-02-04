@@ -1,4 +1,4 @@
-package devgraft.dgcinemabackend.payment.app;
+package devgraft.dgcinemabackend.reservation.app;
 
 import org.springframework.stereotype.Service;
 

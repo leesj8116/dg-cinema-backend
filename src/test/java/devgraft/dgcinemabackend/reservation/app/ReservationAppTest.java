@@ -2,6 +2,7 @@ package devgraft.dgcinemabackend.reservation.app;
 
 import static devgraft.dgcinemabackend.reservation.ReservationFixture.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,6 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import devgraft.dgcinemabackend.reservation.domain.DgUserFinder;
 import devgraft.dgcinemabackend.reservation.domain.GetMyReservationRequest;
+import devgraft.dgcinemabackend.reservation.domain.PurchaseContext;
 import devgraft.dgcinemabackend.reservation.domain.ReservationContext;
 import devgraft.dgcinemabackend.reservation.domain.ReservationErrorCode;
 import devgraft.dgcinemabackend.reservation.domain.ReservationException;
@@ -119,4 +121,23 @@ class ReservationAppTest {
 			.isEqualTo(ReservationErrorCode.USER_NOT_FOUND);
 	}
 
+	@Test
+	@DisplayName("예약 만료 확인 호출시, 유효시간(생성으로 부터 5분)이 지나면 에러를 반환한다")
+	void reservation_is_available_should_throw_exception_when_reservation_created_date_has_left_5_minutes() {
+		Mockito.when(reservationRepository.findById(Mockito.anyLong()))
+			.thenReturn(Optional.of(
+				anReservation().createdDate(LocalDateTime.now().minusMinutes(5L)).build()
+			));
+
+		final PurchaseContext purchaseContext = new PurchaseContext(1L, 10000);
+
+		final ReservationException exception = Assertions.catchThrowableOfType(
+			ReservationException.class, () -> reservationApp.purchase(purchaseContext)
+		);
+
+		Assertions.assertThat(exception).isNotNull();
+		Assertions.assertThat(exception.getErrorCode())
+			.isEqualTo(ReservationErrorCode.ALREADY_RESERVATION_HAS_NOT_AVAILABLE);
+
+	}
 }

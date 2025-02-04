@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 import devgraft.dgcinemabackend.cinema.domain.ScreenRoom;
 import devgraft.dgcinemabackend.movie.domain.Movie;
+import devgraft.dgcinemabackend.reservation.domain.Reservation;
 import devgraft.dgcinemabackend.runningtime.domain.RunningTime;
 import devgraft.dgcinemabackend.user.domain.DgUser;
 
@@ -33,5 +34,9 @@ public class ReservationFixture {
 			.movieId(1L)
 			.title("제목")
 			.director("감독");
+	}
+
+	public static Reservation.ReservationBuilder<?, ?> anReservation() {
+		return Reservation.builder().reservationId(1L);
 	}
 }

@@ -1,4 +1,4 @@
-package devgraft.dgcinemabackend.payment.app;
+package devgraft.dgcinemabackend.reservation.app;
 
 public interface ExternalUseCase {
 	Boolean purchase();

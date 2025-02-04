@@ -1,4 +1,4 @@
-package devgraft.dgcinemabackend.payment.domain;
+package devgraft.dgcinemabackend.reservation.domain;
 
 public record PaymentResult(
 	Long paymentId,

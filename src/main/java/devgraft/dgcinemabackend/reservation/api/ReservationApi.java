@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import devgraft.dgcinemabackend.reservation.app.ReservationUseCase;
 import devgraft.dgcinemabackend.reservation.domain.GetMyReservationRequest;
+import devgraft.dgcinemabackend.reservation.domain.PaymentResult;
+import devgraft.dgcinemabackend.reservation.domain.PurchaseContext;
+import devgraft.dgcinemabackend.reservation.domain.ReservationCancelContext;
 import devgraft.dgcinemabackend.reservation.domain.ReservationContext;
 import devgraft.dgcinemabackend.reservation.domain.ReservationResult;
 import lombok.RequiredArgsConstructor;
@@ -46,5 +49,25 @@ class ReservationApi {
 	@PostMapping("/reservation/my")
 	public List<ReservationResult> getUserReservations(@RequestBody GetMyReservationRequest request) {
 		return reservationUseCase.getUserReservations(request);
+	}
+
+	/**
+	 * 예약 건에 대해 결제 처리한다.
+	 * @param purchaseContext
+	 * @return
+	 */
+	@PostMapping("/reservation/purchase")
+	public PaymentResult register(@RequestBody PurchaseContext purchaseContext) {
+		return reservationUseCase.purchase(purchaseContext);
+	}
+
+	/**
+	 * 예약을 취소한다
+	 * @param context 예약에 필요한 정보 (누가, 어느 상영 시간을, 어떤 자리에)
+	 * @return
+	 */
+	@PostMapping("/reservation/cancel")
+	public ReservationResult cancel(@RequestBody ReservationCancelContext context) {
+		return reservationUseCase.cancelReservation(context);
 	}
 }
